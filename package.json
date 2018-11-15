@@ -1,0 +1,25 @@
+{
+  "name": "bible-api_js",
+  "version": "1.0.0",
+  "description": "provides bible api service",
+  "main": "server.js",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "mongoose": "^5.3.11",
+    "morgan": "^1.9.1",
+    "multer": "^1.4.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.6"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "keywords": [
+    "bibleapi"
+  ],
+  "author": "author and finisher of our faith",
+  "license": "ISC"
+}
