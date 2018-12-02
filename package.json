@@ -4,11 +4,18 @@
   "description": "provides bible api service",
   "main": "server.js",
   "dependencies": {
+    "@types/node": "^10.12.10",
+    "bcrypt": "^3.0.2",
     "body-parser": "^1.18.3",
+    "crypto-js": "^3.1.9-1",
     "express": "^4.16.4",
+    "jsonwebtoken": "^8.4.0",
+    "md5": "^2.2.1",
     "mongoose": "^5.3.11",
     "morgan": "^1.9.1",
-    "multer": "^1.4.1"
+    "multer": "^1.4.1",
+    "node-forge": "^0.7.6",
+    "utf8": "^3.0.0"
   },
   "devDependencies": {
     "nodemon": "^1.18.6"

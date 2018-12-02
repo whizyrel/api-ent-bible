@@ -1,13 +1,13 @@
 const express = require('express');
-const adminAPIController = require('../../controllers/admin/api');
+const adminCtrl = require('../../controllers/admin/api');
 
 const route = express.Router();
 
 // create and edit
 // create resource
-route.post('/create', adminAPIController.addResource);
+route.post('/create', adminCtrl.addResource);
 
 // edit resource component
-route.patch('/modify', adminAPIController.editResource);
+route.patch("/modify", adminCtrl.editResource);
 
 module.exports = route;

@@ -1,8 +1,4 @@
-const express = require('express');
-const mongoose = require('mongoose');
 const Chapter = require('../../models/chapter');
-
-const app = express();
 
 exports.addResource = (req, res, next) => {
     Chapter.create(req.body)
