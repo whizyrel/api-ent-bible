@@ -26,6 +26,7 @@ exports.give = (req, res, next) => {
             message: doc.message
           }
         });
+      // notify, appreciating such person
     })
     .catch(err => {
       res.status(500).json({ message: err });

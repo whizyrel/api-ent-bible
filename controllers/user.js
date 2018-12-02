@@ -285,7 +285,7 @@ exports.upgrade = (req, res, next) => {
               // Handle error
               res.status(404).json({ message: err });
             }); */
-          // notify me and client
+          // change accountType to premium, notify me and client
         })
         .catch(err => {
           // Handle error
@@ -329,6 +329,5 @@ exports.paymentsResp = (req, res, next) => {
 
   res.send(200);
 };
-
 
 // upgrade, webhook, mails, frontend

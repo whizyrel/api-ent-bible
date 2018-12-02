@@ -29,6 +29,7 @@ exports.submitFeedback = (req, res, next) => {
             body: doc.body
           }
         });
+      // notify the sender
     })
     .catch(err => {
       res.status(500).json({
