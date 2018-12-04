@@ -26,7 +26,10 @@
     "start": "nodemon server.js"
   },
   "keywords": [
-    "bibleapi"
+    "bible",
+    "api",
+    "service",
+    "word"
   ],
   "author": "author and finisher of our faith",
   "license": "ISC"
