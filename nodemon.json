@@ -4,6 +4,8 @@
     "PUB_KEY": "FLWPUBK-b3b97bb08ff4e97d711c2c0f0fcb524f-X",
     "SEC_KEY": "FLWSECK-af31d45fd614aa557430d41b28fac921-X",
     "ENC_KEY": "af31d45fd6140290ad74423e",
-    "VHOOK": "whvhgci"
+    "VHOOK": "whvhgci",
+    "M_DURI": "mongodb://localhost:27017/bibleStore",
+    "M_PURI": "mongodb://whizyrel:Anything5000@ds161183.mlab.com:61183/biblestore"
   }
 }

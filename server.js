@@ -7,7 +7,7 @@ const app = express();
 
 mongoose
   .connect(
-    "mongodb://localhost:27017/bibleStore",
+    process.env.M_DURI,
     { useNewUrlParser: true, useCreateIndex: true, autoIndex: true }
   )
   .then(resp => console.log(`[Mongodb Server] started on port 27017`))
