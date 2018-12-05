@@ -4,7 +4,9 @@ const jwt = require("jsonwebtoken");
 const cryptoJs = require("crypto-js");
 const utf8 = require("utf8"); */
 const forge = require("node-forge");
+// @ts-ignore
 const ravepay = require("ravepay");
+const sendgrid = require('sendgrid');
 
 const User = require("../models/user");
 
@@ -31,15 +33,18 @@ exports.signUp = (req, res, next) => {
               package: req.body.package
             })
               .then(doc => {
-                res.status(201).json({
-                  message: "Sign up Successful",
-                  details: {
-                    name: doc.name,
-                    email: doc.email
-                  },
-                  all: doc
-                });
                 // notify user of success
+                res
+                  .status(201)
+                  .json({
+                    message:
+                      "Sign up Successful",
+                    details: {
+                      name: doc.name,
+                      email: doc.email
+                    },
+                    all: doc
+                  });
               })
               .catch(err => {
                 res.status(500).json({
