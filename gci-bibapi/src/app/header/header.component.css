@@ -1,0 +1,5 @@
+mat-toolbar {
+  display: flex;
+  position: sticky;
+  top: 0px;
+}

@@ -1,0 +1,10 @@
+div{
+  display: flex;
+  padding: 10px;
+  float: right;
+  margin-right: 20px;
+  width: fit-content;
+}
+mat-tab-group {
+  width: 100%;
+}

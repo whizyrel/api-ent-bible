@@ -7,7 +7,7 @@ const app = express();
 
 mongoose
   .connect(
-    process.env.M_DURI,
+    process.env.M_PURI,
     { useNewUrlParser: true, useCreateIndex: true, autoIndex: true }
   )
   .then(resp => console.log(`[Mongodb Server] started on port 27017`))
