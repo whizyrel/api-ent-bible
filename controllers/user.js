@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-/* const md5 = require("md5");
 const cryptoJs = require("crypto-js");
+/* const md5 = require("md5");;
 const utf8 = require("utf8"); */
 const forge = require("node-forge");
 // @ts-ignore
@@ -9,69 +9,116 @@ const ravepay = require("ravepay");
 const sendgrid = require('sendgrid');
 
 const User = require("../models/user");
+const encryption = require("../helpers/encryption");
+
+const urlEncKey = process.env.URL_ENC_KEY;
 
 exports.signUp = (req, res, next) => {
-  User.findOne({ email: req.body.email })
+  User.findOne({ email: req.body.email.toLowerCase() })
     .select("-_id -__v")
     .exec()
     .then(result => {
       if (result < 1) {
         bcrypt.hash(req.body.password, 10, (err, hash) => {
           if (err) {
-            return res.status(500).json({
-              message: err
-            });
+            return res.status(500).json({ message: err });
           } else {
             User.create({
               firstname: req.body.firstname,
               lastname: req.body.lastname,
               organisation: req.body.organisation,
               address: req.body.address,
-              email: req.body.email,
+              email: req.body.email.toLowerCase(),
               password: hash,
               accountType: req.body.accountType,
               package: req.body.package
             })
               .then(doc => {
-                // notify user of success
+                // const encodedData = encryption.encrypt(doc.email);
+                const encodedData = cryptoJs.AES.encrypt(doc.email, urlEncKey);
+                console.log(encodedData);
+                // notify user of success via mail with verification link
                 res
                   .status(201)
                   .json({
-                    message:
-                      "Sign up Successful",
-                    details: {
-                      name: doc.name,
-                      email: doc.email
-                    },
-                    all: doc
+                    message: "Success! Find verification link in E-mail",
+                    encData: encodedData,
+                    details: doc
                   });
               })
               .catch(err => {
-                res.status(500).json({
-                  message: err + " :Couldn't create user"
-                });
+                res
+                  .status(500)
+                  .json({
+                    message: err + ": Couldn't create Account"
+                  });
               });
           }
         });
       } else {
-        res.status(409).json({
-          message: "User exists"
-        });
+        res.status(409).json({ message: "Account already exists" });
       }
+    }).catch(err => {
+      res.status(404).json({ message: "An error occurred" });
     });
 };
 
+exports.verify = (req, res, next) => {
+  console.log(req.params);
+  //  decrpyt details coming form encrypted link from user's mail
+  let encodedData = req.params.enc;
+  console.log(encodedData);
+  // let decodedData = encryption.decrypt(encodedData);
+  const decodedData = cryptoJs.AES.decrypt(encodedData.toString(), urlEncKey)
+  console.log(decodedData);
+  res.send(decodedData);
+
+  /* User.findOne({ email: decodedData })
+    .then(doc => {
+      // check if user is verified
+      if (doc.status === true) {
+        return res.status(403).json({
+          message: "Already Verified!"
+        });
+      }
+      User.updateOne({ _id: doc._id }, { status: true })
+        .exec()
+        .then(result => {
+          // notify user of verification success via mail containing the id as api key
+          const encodedKey = Buffer.from(doc.id).toString("hex");
+          console.log(encodedKey);
+          res
+            .status(200)
+            .json({
+              message: "Your Account is now Verified!",
+              key: encodedKey
+            });
+        })
+        .catch(err => {
+          res.status(500).json({
+            message: "Operation failed"
+          });
+        });
+    })
+    .catch(err => {
+      res.status(500).json({ message: "Operation failed" });
+    }); */
+};
+
 exports.signIn = (req, res, next) => {
-  User.findOne({ email: req.body.email })
+  // res.status(200).json({ resp: req.body });
+  User.findOne({ email: req.body.email.toLowerCase() })
     .select("-__v")
     .exec()
     .then(doc => {
       if (doc) {
         bcrypt.compare(req.body.password, doc.password, (err, result) => {
           if (err) {
-            return res.status(401).json({
-              message: "Authentication failed!"
-            });
+            return res
+              .status(401)
+              .json({
+                message: "Authentication failed!"
+              });
           }
           if (result) {
             const token = jwt.sign(
@@ -85,28 +132,32 @@ exports.signIn = (req, res, next) => {
                 expiresIn: "1h"
               }
             );
-            // req.setHeader("Authorization", "Bearer " + token);
-            // console.log(req.headers);
-            return res.status(200).json({
-              message: "Authentication Successful",
-              details: { token: token }
-            });
-            // mail user the id as api key
+            if (doc.status) {
+              return res
+                .status(200)
+                .json({
+                  message:
+                    "Authentication Successful",
+                  token: token,
+                  details: doc
+                });
+            } else {
+              return res
+                .status(200)
+                .json({
+                  message: "Unverified Account. Check your E-mail for link"
+                });
+              // consider didnt get verification link
+            }
           }
-          res.status(401).json({
-            message: "Authentication failed"
-          });
+          res.status(403).json({ message: "Authentication failed" });
         });
       } else {
-        res.status(401).json({
-          message: "Authentication failed"
-        });
+        res.status(401).json({ message: "Acount doesn't exist" });
       }
     })
     .catch(err => {
-      res.status(500).json({
-        message: err + " : Operation failed"
-      });
+      res.status(500).json({ message: "Operation failed" });
     });
 };
 
@@ -128,7 +179,26 @@ exports.modify = (req, res, next) => {
     });
 };
 
-// forgot password route
+// forgot password route from sign in view
+exports.forgot = (req, res, next) => {
+  User.findOne({ email: req.body.email.toLowerCase() })
+    .exec()
+    .then(result => {
+      // search for email
+      // send a password recovery link to user's mail with authorization check
+      if (result) {
+        // send recovery link to email
+        res.status(200).json({
+          message: 'Please reach your E-mail account for link to change your Password'
+        })
+      }
+    })
+    .catch(err => {
+      res.status(500).json({ message: "Operation failed" });
+    });
+};
+
+// forgot password route sent to mail
 exports.retrieve = (req, res, next) => {
   bcrypt.hash(req.body.password, 10, (err, hash) => {
     if (err) {
@@ -137,32 +207,38 @@ exports.retrieve = (req, res, next) => {
       });
     } else {
       // check if email exists first, then update password with new password
-      User.findOne({ email: req.body.email })
+      User.findOne({ email: req.body.email.toLowerCase() })
         .exec()
         .then(result => {
           if (result.email) {
-            User.update({ email: req.body.email }, { $set: { password: hash } })
+            User.update({ email: req.body.email.toLowerCase() }, { $set: { password: hash } })
               .exec()
               .then(result => {
-                res.status(200).json({
-                  message: "Operation Successful",
-                  result: result.pasword
-                });
-                // notify user of success
+                res
+                  .status(200)
+                  .json({
+                    message: "Operation Successful",
+                    result: result.pasword
+                  });
+                // notify user of success via mail
               })
               .catch(err => {
-                res.status(500).json({
-                  message: err + " : Operation failed"
-                });
+                res
+                  .status(500)
+                  .json({
+                    message: "Operation failed"
+                  });
               });
           } else {
-            return res.status(404).json({
-              message: "Authentication failed!"
-            });
+            return res
+              .status(404)
+              .json({
+                message: "Authentication failed!"
+              });
           }
         })
         .catch(err => {
-          res.status(500).json({ error: err + " : Operation failed" });
+          res.status(500).json({ message: "Operation failed" });
         });
     }
   });
@@ -189,7 +265,7 @@ exports.listUsers = (req, res, next) => {
       }
     })
     .catch(err => {
-      res.status(404).json({ error: err });
+      res.status(404).json({ message: err });
     });
 };
 
@@ -204,7 +280,7 @@ exports.deleteUsers = (req, res, next) => {
             res.status(200).json({ message: "Account successfully deleted" });
           })
           .catch(err => {
-            res.status(422).json({ error: err });
+            res.status(422).json({ message: "Operation failed" });
           });
         // notify me and clint of operation
       } else {
@@ -212,9 +288,7 @@ exports.deleteUsers = (req, res, next) => {
       }
     })
     .catch(err => {
-      res.status(404).json({
-        message: err
-      });
+      res.status(404).json({ message: "Operation failed" });
     });
 };
 
@@ -294,14 +368,14 @@ exports.upgrade = (req, res, next) => {
         })
         .catch(err => {
           // Handle error
-          res.status(404).json({ message: err });
+          res.status(404).json({ message: "Operation failed" });
         });
       res.status(200).json({
         message: payload
       });
     })
     .catch(err => {
-      res.status(404).json({ message: err });
+      res.status(404).json({ message: "Operation failed" });
     });
 };
 

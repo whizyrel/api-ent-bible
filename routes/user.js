@@ -10,13 +10,19 @@ const route = express.Router();
 route.post("/signup", userController.signUp);
 
 // [get] user signs in to get token
-route.get("/signin", userController.signIn);
+route.put("/signin", userController.signIn);
 
-// [patch] edit user details in db --> user && admin
-route.patch("/modify/", checkAuth, userController.modify);
+// [patch] first link to password recovery
+route.patch("/verify/:enc", userController.verify);
+
+// [put] first link to password recovery
+route.put("/forgot", userController.forgot);
 
 // [patch] retrieve password
 route.patch("/retrieve", userController.retrieve);
+
+// [patch] edit user details in db --> user && admin
+route.patch("/modify", checkAuth, userController.modify);
 
 // [get] user lists/details from db --> admin
 route.get("/lists", checkAuth, userController.listUsers);

@@ -26,10 +26,10 @@ app.use(bodyParser.json());
 // [middleware] address cors related issues
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Method", "GET, POST, PUT, PATCH, DELETE");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE");
   res.header(
-    "Access-Control-Allow-Header",
-    "Origin, application/x-www-form-urlencoded, Accept, Authorization, content-Type"
+    "Access-Control-Allow-Headers",
+    "Origin, application/x-www-form-urlencoded, Accept, Authorization, Content-Type"
   );
 
   if (req.method == "OPTIONS") {

@@ -1,10 +1,14 @@
 const User = require('../models/user');
 
 module.exports = (req, res, next) => {
+  // use encoded string instead of bare _id as api key
   if (req.query.key) {
-    User.findOne({ _id: req.query.key })
+    // use buffer instead of cryptoJs -> i would rather cryptoJs
+    const decodedKey = Buffer.from(req.query.key, 'base64').toString();
+    console.log(decodedKey);
+    User.findOne({ _id: decodedKey })
       .then(doc => {
-        if (req.query.key == doc._id) {
+        if (doc) {
           next();
         } else {
           return res.status(401).json({
@@ -14,7 +18,7 @@ module.exports = (req, res, next) => {
       })
       .catch(err => {
         res.status(404).json({
-          error: err
+          error: 'Invalid request'
         })
       });
   } else {

@@ -5,8 +5,8 @@ const User = new Schema({
   firstname: { type: String, required: true },
   lastname: { type: String, required: true },
   organisation: { type: String, required: false },
-  address: { type: String, required: true },
-  phonenumber: {type: String, required: true},
+  address: { type: String, required: true },/* 
+  phonenumber: {type: String, required: true}, */
   email: {
     type: String,
     unique: true,
@@ -16,8 +16,9 @@ const User = new Schema({
       "invalid email"
     ]
   },
+  status: {type: Boolean, default: false},
   password: { type: String, required: true },
-  accountType: { type: String , default: 'regular',required: true  },
+  accountType: { type: String , default: 'regular', required: true  },
   package: { type: String , default: 'classic', required: true  }
 });
 

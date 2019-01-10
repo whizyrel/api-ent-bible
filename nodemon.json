@@ -1,5 +1,6 @@
 {
   "env": {
+    "URL_ENC_KEY": "gci-secret",
     "JWT_KEY": "nac-egabrag",
     "PUB_KEY": "FLWPUBK-b3b97bb08ff4e97d711c2c0f0fcb524f-X",
     "SEC_KEY": "FLWSECK-af31d45fd614aa557430d41b28fac921-X",
