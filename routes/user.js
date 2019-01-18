@@ -13,7 +13,7 @@ route.post("/signup", userController.signUp);
 route.put("/signin", userController.signIn);
 
 // [patch] first link to password recovery
-route.patch("/verify/:enc", userController.verify);
+route.patch("/verify/", userController.verify);
 
 // [put] first link to password recovery
 route.put("/forgot", userController.forgot);

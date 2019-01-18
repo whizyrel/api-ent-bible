@@ -7,7 +7,7 @@ const app = express();
 
 mongoose
   .connect(
-    /* process.env.M_PURI */ /* process.env.M_DURI */"mongodb://localhost:27017/bibleStore",
+    process.env.M_DURI /* "mongodb://localhost:27017/bibleStore" */,
     // @ts-ignore
     { useNewUrlParser: true, useCreateIndex: true, autoIndex: true }
   )
