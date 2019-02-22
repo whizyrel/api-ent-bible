@@ -1,38 +1,38 @@
 // @ts-ignore
-const express = require("express");
+const express = require('express');
 // @ts-ignore
-const bodyParser = require("body-parser");
+const bodyParser = require('body-parser');
 // @ts-ignore
-const morgan = require("morgan");
+const morgan = require('morgan');
 
-const feedback = require("./routes/feedback");
-const api = require("./routes/api");
-const adminAPI = require("./routes/admin/api");
-const users = require("./routes/user");
-const commentary = require("./routes/commentary");
-const adminCommentary = require("./routes/admin/commentary");
-const donations = require("./routes/donation");
-// const ments = require("./routes/donation");
+const Feedback = require('./routes/feedback');
+const Api = require('./routes/api');
+const AdminAPI = require('./routes/admin/api');
+const Users = require('./routes/user');
+const Commentary = require('./routes/commentary');
+const AdminCommentary = require('./routes/admin/commentary');
+const Donations = require('./routes/donation');
 
 const app = express();
 
 // [middleware] using morgan
-app.use(morgan("dev"));
+app.use(morgan('dev'));
 
 // [middleware] using body parser
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 // [middleware] address cors related issues
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE");
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
   res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, application/x-www-form-urlencoded, Accept, Authorization, Content-Type"
+      'Access-Control-Allow-Headers',
+      // eslint-disable-next-line max-len
+      'Origin, application/x-www-form-urlencoded, Accept, Authorization, Content-Type'
   );
 
-  if (req.method == "OPTIONS") {
+  if (req.method == 'OPTIONS') {
     return res.status(200).json({});
   }
   next();
@@ -40,43 +40,43 @@ app.use((req, res, next) => {
 
 // serving static files at root
 // @ts-ignore
-app.use("/", express.static("public"));
+app.use('/', express.static('public'));
 
 // @ts-ignore
-app.use("/", express.static("uploads"));
+app.use('/', express.static('uploads'));
 
 // [feedback] routes to feedback
 // @ts-ignore
-app.use("/feedback", feedback);
+app.use('/feedback', Feedback);
 
 // [donation] routes to doantion
 // @ts-ignore
-app.use("/donation", donations);
+app.use('/donation', Donations);
 
 // [User] user and admin routes
 // @ts-ignore
-app.use("/users", users);
+app.use('/users', Users);
 
 // [api] user routes
 // @ts-ignore
-app.use("/api", api);
+app.use('/api', Api);
 
 // [api] admin routes
 // @ts-ignore
-app.use("/admin/api", adminAPI);
+app.use('/admin/api', AdminAPI);
 
 // [commentary] user routes
 // @ts-ignore
-app.use("/api/commentary", commentary);
+app.use('/api/commentary', Commentary);
 
 // [api] admin commentary routes
 // @ts-ignore
-app.use("/admin/api/commentary", adminCommentary);
+app.use('/admin/api/commentary', AdminCommentary);
 
 // [middleware] handling errors from route
 // @ts-ignore
 app.use((req, res, next) => {
-  const error = new Error("Oops! something went wrong");
+  const error = new Error('Oops! something went wrong');
   // @ts-ignore
   error.status = 404;
   next(error);
@@ -87,7 +87,7 @@ app.use((req, res, next) => {
 app.use((error, req, res, next) => {
   // [error 404] implement one nice error 404 page
   res.status(error.status || 400).json({
-    error: error.message
+    error: error.message,
   });
   next();
 });

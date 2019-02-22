@@ -10,40 +10,40 @@ exports.give = (req, res, next) => {
     email: req.body.email,
     phone: req.body.phone,
     amount: parseInt(req.body.amount),
-    message: req.body.message
+    message: req.body.message,
   })
-    .then(doc => {
+      .then((doc) => {
       // rediect to donation Page
-      res
-        .status(201)
-        .json({
-          message: "Donation received",
-          details: {
-            name: doc.name,
-            email: doc.email,
-            phone: doc.phone,
-            amount: parseInt(doc.amount),
-            message: doc.message
-          }
-        });
+        res
+            .status(201)
+            .json({
+              message: 'Donation received',
+              details: {
+                name: doc.name,
+                email: doc.email,
+                phone: doc.phone,
+                amount: parseInt(doc.amount),
+                message: doc.message,
+              },
+            });
       // notify, appreciating such person
-    })
-    .catch(err => {
-      res.status(500).json({ message: err });
-    });
+      })
+      .catch((err) => {
+        res.status(500).json({message: err});
+      });
 };
 
 exports.list = (req, res, next) => {
   // list donations from database
   Donation.find({})
-    .select("-__v")
-    .exec()
-    .then(docs => {
-      res.status(200).json({
-        results: docs
+      .select('-__v')
+      .exec()
+      .then((docs) => {
+        res.status(200).json({
+          results: docs,
+        });
       })
-    })
-    .catch(err => {
-      res.status(500).json({ message: err });
-    });
+      .catch((err) => {
+        res.status(500).json({message: err});
+      });
 };

@@ -1,42 +1,42 @@
-const express = require("express");
+const express = require('express');
+// eslint-disable-next-line new-cap
+const Route = express.Router();
 
-const userController = require("../controllers/user");
-const checkAuth = require("../middlewares/check-auth");
+const userController = require('../controllers/user');
+const checkAuth = require('../middlewares/check-auth');
 
-const route = express.Router();
-
-// [routes]
+// [Routes]
 // [post] add users to db --> admin
-route.post("/signup", userController.signUp);
+Route.post('/signup', userController.signUp);
 
 // [get] user signs in to get token
-route.put("/signin", userController.signIn);
+Route.put('/signin', userController.signIn);
 
 // [patch] first link to password recovery
-route.patch("/verify/", userController.verify);
+Route.patch('/verify/', userController.verify);
 
 // [put] first link to password recovery
-route.put("/forgot", userController.forgot);
+Route.put('/forgot', userController.forgot);
 
 // [patch] retrieve password
-route.patch("/retrieve", userController.retrieve);
+Route.patch('/retrieve', userController.retrieve);
 
 // [patch] edit user details in db --> user && admin
-route.patch("/modify", checkAuth, userController.modify);
+Route.patch('/modify', checkAuth, userController.modify);
 
 // [get] user lists/details from db --> admin
-route.get("/lists", checkAuth, userController.listUsers);
+Route.get('/lists', checkAuth, userController.listUsers);
 
 // [delete] delete users from db --> user && admin
-route.delete("/delete", checkAuth, userController.deleteUsers);
+Route.delete('/delete', checkAuth, userController.deleteUsers);
 
 // [upgrade] upgrade users access --> user after payment
-route.patch("/upgrade", checkAuth, userController.upgrade);
+Route.patch('/upgrade', checkAuth, userController.upgrade);
 
 // payments webhook
-route.post("/payments", userController.paymentsResp);
+Route.post('/payments', userController.paymentsResp);
 
-// authentication gives access to each route either admin || user
+// authentication gives access to each Route either admin || user
 // [user keys] PATCH --> db --> edit users information
 // [admin keys] PUT, DELETE, PATCH, GET --> db --> users
-module.exports = route;
+module.exports = Route;

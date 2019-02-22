@@ -6,24 +6,24 @@ module.exports = (req, res, next) => {
     // use buffer instead of cryptoJs -> i would rather cryptoJs
     const decodedKey = Buffer.from(req.query.key, 'base64').toString('ascii');
     console.log(decodedKey);
-    User.findOne({ _id: decodedKey })
-      .then(doc => {
-        if (doc) {
-          next();
-        } else {
-          return res.status(401).json({
-            message: 'Authorization failed'
+    User.findOne({_id: decodedKey})
+        .then((doc) => {
+          if (doc) {
+            next();
+          } else {
+            return res.status(401).json({
+              message: 'Authorization failed',
+            });
+          }
+        })
+        .catch((err) => {
+          res.status(404).json({
+            error: 'Invalid request',
           });
-        }
-      })
-      .catch(err => {
-        res.status(404).json({
-          error: 'Invalid request'
         });
-      });
   } else {
     return res.status(401).json({
-      message: 'Authorization failed'
-    }); 
+      message: 'Authorization failed',
+    });
   }
 };

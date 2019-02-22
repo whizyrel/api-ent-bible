@@ -1,5 +1,6 @@
 {
   "env": {
+    "DOMAIN_NAME": "localhost:4445",
     "URL_ENC_KEY": "gci-secret",
     "JWT_KEY": "nac-egabrag",
     "PUB_KEY": "FLWPUBK-b3b97bb08ff4e97d711c2c0f0fcb524f-X",

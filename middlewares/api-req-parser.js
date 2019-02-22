@@ -1,8 +1,9 @@
+/* eslint-disable max-len */
 exports.checkAll = (req, res, next) => {
   if (req.query && req.query.vrsn) {
     next();
   } else {
-    res.status(404).json({ message: 'Invalid Request. Please check your queries' });
+    res.status(404).json({message: 'Invalid Request. Please check your queries'});
   }
 };
 
@@ -11,8 +12,8 @@ exports.checkBookQuery = (req, res, next) => {
     next();
   } else {
     res
-      .status(404)
-      .json({ message: "Invalid Request. Please check your queries" });
+        .status(404)
+        .json({message: 'Invalid Request. Please check your queries'});
   }
 };
 
@@ -21,8 +22,8 @@ exports.checkChapQuery = (req, res, next) => {
     next();
   } else {
     res
-      .status(404)
-      .json({ message: "Invalid Request. Please check your queries" });
+        .status(404)
+        .json({message: 'Invalid Request. Please check your queries'});
   }
 };
 
@@ -31,7 +32,7 @@ exports.checkVrsQuery = (req, res, next) => {
     next();
   } else {
     res
-      .status(404)
-      .json({ message: "Invalid Request. Please check your queries" });
+        .status(404)
+        .json({message: 'Invalid Request. Please check your queries'});
   }
 };
