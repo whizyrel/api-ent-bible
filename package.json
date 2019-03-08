@@ -44,5 +44,6 @@
   "bugs": {
     "url": "https://github.com/whizyrel/bibleAPI/issues"
   },
-  "homepage": "https://github.com/whizyrel/bibleAPI#readme"
+  "homepage": "https://github.com/whizyrel/bibleAPI#readme",
+  "heroku-run-build-script": true
 }
