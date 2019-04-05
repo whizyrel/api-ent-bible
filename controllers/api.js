@@ -105,11 +105,11 @@ exports.getVerse = (req, res, next) => {
           });
           console.log(verses);
           return res.status(200).json({
-            request: verses.map((el, i) => {
-              if (el == verses[i - 1]) {
-                verses.splice(i, 1);
+            request: verses.filter((el, i) => {
+              if (el !== verses[i - 1]) {
+                return el;
+                // verses.splice(i, 1);
               }
-              return el;
             }),
           });
         }
