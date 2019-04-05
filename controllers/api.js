@@ -99,9 +99,9 @@ exports.getVerse = (req, res, next) => {
         // grab verses
           const verses = [];
           requests.forEach((vrs) => {
-            verses.push(docs.forEach((doc) => {
+            verses.push(docs.map((doc) => {
               return doc.verses[vrs - 1];
-            }));
+            })[0]);
           });
           /*
           .map((el, i) => {
