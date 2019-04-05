@@ -102,14 +102,12 @@ exports.getVerse = (req, res, next) => {
             verses.push(docs.map((doc) => {
               return doc.verses[vrs - 1];
             })[0]);
-          });
-          /*
-          .map((el, i) => {
+          }).map((el, i) => {
             if (el == verses[i - 1]) {
               return verses.splice(i, 1);
             }
-          })
-           */
+          });
+          console.log(verses);
           return res.status(200).json({
             request: verses,
           });
