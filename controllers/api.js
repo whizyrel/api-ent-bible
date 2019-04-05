@@ -103,12 +103,15 @@ exports.getVerse = (req, res, next) => {
               return doc.verses[vrs - 1];
             }));
           });
+          /*
+          .map((el, i) => {
+            if (el == verses[i - 1]) {
+              return verses.splice(i, 1);
+            }
+          })
+           */
           return res.status(200).json({
-            request: verses.map((el, i) => {
-              if (el == verses[i - 1]) {
-                return verses.splice(i, 1);
-              }
-            }),
+            request: verses,
           });
         }
         res.status(422).json({
