@@ -39,7 +39,7 @@ exports.getBook = (req, res, next) => {
 
 // @ts-ignore
 exports.getChapter = (req, res, next) => {
-  // ?vrsn=kjv&bk=revelation&chp=18-15|1&key='insert key here'
+  // ?vrsn=kjv&bk=genesis&chp=1&vrs=5-8|3-5|1-2&key='insert key here'
   const reqArr = req.query.chp.split('|');
   const requests = helpers.parseChapReq(reqArr);
 
@@ -108,7 +108,6 @@ exports.getVerse = (req, res, next) => {
             request: verses.filter((el, i) => {
               if (el !== verses[i - 1]) {
                 return el;
-                // verses.splice(i, 1);
               }
             }),
           });
