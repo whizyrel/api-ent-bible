@@ -14,12 +14,8 @@ const Sendgrid = require('sendgrid');
 
 const Bingo = require('../helpers/jwt-sign-enc-link-generator');
 const User = require('../models/user');
-const Encryption = require('../helpers/encryption');
-const pubKey = process.env.PUB_KEY;
-const secKey = process.env.SEC_KEY;
-const encKey = process.env.ENC_KEY;
-const JWT_KEY = process.env.JWT_KEY;
-const DomainName = process.env.DOMAIN_NAME;
+// const Encryption = require('../helpers/encryption');
+const {PUB_KEY: pubKey, SEC_KEY: secKey, ENC_KEY: encKey, JWT_KEY: JWT_KEY, DOMAIN_NAME: DomainName} = process.env;
 
 exports.signUp = (req, res, next) => {
   User.findOne({

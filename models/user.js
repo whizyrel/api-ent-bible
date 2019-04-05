@@ -55,6 +55,7 @@ const User = new Schema({
   accountType: {
     type: String,
     default: 'regular',
+    enum: ['regular', 'admin'],
   },
   package: {
     type: String,
