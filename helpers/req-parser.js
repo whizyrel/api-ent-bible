@@ -1,15 +1,15 @@
 const Chapter = require('../models/chapter');
-const booksTitle = require("../resources/books-title");
+const booksTitle = require('../resources/books-title');
 
 // @ts-ignore
-exports.parseNumReq = arr => {
-  let a = [];
-  arr.forEach(cur => {
+exports.parseNumReq = (arr) => {
+  const a = [];
+  arr.forEach((cur) => {
     if (cur.includes('-')) {
       // @ts-ignore
-      let strtInd = parseInt(cur.split('-')[0]);
+      const strtInd = parseInt(cur.split('-')[0]);
       // @ts-ignore
-      let endInd = parseInt(cur.split('-')[1]);
+      const endInd = parseInt(cur.split('-')[1]);
 
       if (strtInd > endInd) {
         for (let r = strtInd; r >= endInd; r--) {
@@ -25,14 +25,14 @@ exports.parseNumReq = arr => {
     }
   });
   return a;
-}
+};
 
-exports.parseStringReq = arr => {
+exports.parseStringReq = (arr) => {
   const a = [];
   arr.forEach((cur) => {
     if (cur.includes('-')) {
       const strtInd = booksTitle.booksTitle().indexOf(cur.split('-')[0]);
-      const endInd = booksTitle.booksTitle().indexOf(cur.split("-")[1]);
+      const endInd = booksTitle.booksTitle().indexOf(cur.split('-')[1]);
 
       if (strtInd > endInd) {
         for (let r = strtInd; r >= endInd; r--) {
@@ -48,16 +48,16 @@ exports.parseStringReq = arr => {
     }
   });
   return a;
-}
+};
 
-exports.parseChapReq = arr => {
+exports.parseChapReq = (arr) => {
   const a = [];
   arr.forEach((cur) => {
     if (cur.includes('-')) {
       // @ts-ignore
-      let strtInd = parseInt(cur.split('-')[0]);
+      const strtInd = parseInt(cur.split('-')[0]);
       // @ts-ignore
-      let endInd = parseInt(cur.split('-')[1]);
+      const endInd = parseInt(cur.split('-')[1]);
 
       if (strtInd > endInd) {
         for (let r = strtInd; r >= endInd; r--) {
@@ -73,19 +73,19 @@ exports.parseChapReq = arr => {
     }
   });
   return a.sort();
-}
+};
 
 exports.getRes = (arr, req, res) => {
-  Chapter.find({ version: req.query.vrsn, bookTitle: { $in: arr } })
-    .sort({ $natural: 1 })
-    .select('-_id chapterNo bookTitle version verses')
-    .exec()
-    .then(docs => {
-      res.status(200).json({ results: docs });
-    })
-    .catch((err) => {
-      res.status(400).json({
-        error: err + ': Something went wrong!'
+  Chapter.find({version: req.query.vrsn, bookTitle: {$in: arr}})
+      .sort({$natural: 1})
+      .select('-_id chapterNo bookTitle version verses')
+      .exec()
+      .then((docs) => {
+        res.status(200).json({results: docs});
+      })
+      .catch((err) => {
+        res.status(400).json({
+          error: err + ': Something went wrong!',
+        });
       });
-    });
 };

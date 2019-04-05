@@ -3,7 +3,7 @@
 /* eslint-disable max-len */
 const bcrypt = require('bcrypt');
 const JWT = require('jsonwebtoken');
-const CryptoJS = require('crypto-js');
+// const CryptoJS = require('crypto-js');
 /* const md5 = require("md5");;
 const utf8 = require("utf8"); */
 const forge = require('node-forge');
@@ -362,7 +362,7 @@ exports.listUsers = (req, res, next) => {
   })
       .then((doc) => {
       // implement doc.accountType - mandatory
-        if (doc.accountType !== 'regular') {
+        if (doc.accountType === 'admin') {
           User.find({})
               .select('-__v')
               .exec()

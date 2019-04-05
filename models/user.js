@@ -61,6 +61,7 @@ const User = new Schema({
     type: String,
     default: 'classic',
     required: true,
+    enum: ['classic', 'premium'],
   },
 });
 
