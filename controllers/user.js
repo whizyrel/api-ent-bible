@@ -15,7 +15,9 @@ const Sendgrid = require('sendgrid');
 const Bingo = require('../helpers/jwt-sign-enc-link-generator');
 const User = require('../models/user');
 const Encryption = require('../helpers/encryption');
-
+const pubKey = process.env.PUB_KEY;
+const secKey = process.env.SEC_KEY;
+const encKey = process.env.ENC_KEY;
 const JWT_KEY = process.env.JWT_KEY;
 const DomainName = process.env.DOMAIN_NAME;
 
@@ -427,9 +429,6 @@ exports.deleteUsers = (req, res, next) => {
 };
 
 exports.upgrade = (req, res, next) => {
-  const pubKey = process.env.PUB_KEY;
-  const secKey = process.env.SEC_KEY;
-  const encKey = process.env.ENC_KEY;
   const txRef = 'MC-' + Date.now() + 'GCI';
 
   // i guess in dollar equivalent
