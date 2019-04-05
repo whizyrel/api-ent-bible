@@ -100,15 +100,15 @@ exports.getVerse = (req, res, next) => {
           const verses = [];
           requests.forEach((vrs) => {
             verses.push(docs.forEach((doc) => {
-              return doc.verses[vrs - 1];
+              return doc.verses[vrs - 1][0];
             }));
-          }).map((el, i) => {
-            if (el == verses[i - 1]) {
-              return verses.splice(i, 1);
-            }
           });
           return res.status(200).json({
-            request: verses,
+            request: verses.map((el, i) => {
+              if (el == verses[i - 1]) {
+                return verses.splice(i, 1);
+              }
+            }),
           });
         }
         res.status(422).json({
