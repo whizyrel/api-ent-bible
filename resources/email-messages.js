@@ -66,17 +66,17 @@ module.exports = (() => {
       return {
         head: `Welcome! ${
           doc.firstname
-          },`,
+        },`,
         body: `Click the Link to Verify your membership below:${
           '\n'
-          }${
+        }${
           link
-          }`,
+        }`,
         foot: `Technical Unit,${
           '\n'
-          }Living Faith Church${
+        }Living Faith Church${
           '\n'
-          }Ring road, Ibadan`,
+        }Ring road, Ibadan`,
       };
     },
   };
