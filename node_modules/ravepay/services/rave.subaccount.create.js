@@ -47,3 +47,4 @@ function service(data, _rave){
 }
 service.morxspc = spec;
 module.exports = service;
+

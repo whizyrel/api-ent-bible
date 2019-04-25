@@ -1,21 +1,27 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable require-jsdoc */
-/* eslint-disable max-len */
+const {
+  PUB_KEY: pubKey, SEC_KEY: secKey, ENC_KEY: encKey,
+  JWT_KEY: JWT_KEY, DOMAIN_NAME: DomainName, SENDGRID_API_KEY,
+  MAIL,
+} = process.env;
+
 const bcrypt = require('bcrypt');
 const JWT = require('jsonwebtoken');
+const forge = require('node-forge');
+const Ravepay = require('ravepay');
+
+const User = require('../models/user');
+
+const sgMailer = require('../helpers/sg-mailer')(SENDGRID_API_KEY);
+const jwtLinker = require('../helpers/jwt-sign-enc-link-generator');
+const {
+  signUpMail, verificationMail,
+  recoveryLink, deleteMail,
+} = require('../resources/email-messages');
+
 // const CryptoJS = require('crypto-js');
 /* const md5 = require("md5");;
 const utf8 = require("utf8"); */
-const forge = require('node-forge');
-// @ts-ignore
-const Ravepay = require('ravepay');
-const Sendgrid = require('sendgrid');
-// const Bingo = require('bingo');
-
-const Bingo = require('../helpers/jwt-sign-enc-link-generator');
-const User = require('../models/user');
 // const Encryption = require('../helpers/encryption');
-const {PUB_KEY: pubKey, SEC_KEY: secKey, ENC_KEY: encKey, JWT_KEY: JWT_KEY, DOMAIN_NAME: DomainName} = process.env;
 
 exports.signUp = (req, res, next) => {
   User.findOne({
@@ -27,9 +33,10 @@ exports.signUp = (req, res, next) => {
         if (result < 1) {
           bcrypt.hash(req.body.password, 10, (err, hash) => {
             if (err) {
-              return res.status(500).json({
-                message: 'An error occured',
-              });
+              return res.status(500)
+                  .json({
+                    message: 'An error occured',
+                  });
             } else {
               const details = {
                 firstname: req.body.firstname,
@@ -41,11 +48,11 @@ exports.signUp = (req, res, next) => {
                 accountType: req.body.accountType,
                 package: req.body.package,
               };
-              console.log(details);
+
               User.create(details)
                   .then((doc) => {
                     // notify user of success via mail with verification link
-                    Bingo.form({
+                    jwtLinker.form({
                       payload: {
                         email: doc.email.toLowerCase(),
                         id: doc._id,
@@ -59,18 +66,51 @@ exports.signUp = (req, res, next) => {
                       mode: 'query',
                       name: 'enc',
                     }, DomainName + '/users/verify');
-                    const encodedData = Bingo.token;
+                    const encodedData = jwtLinker.token;
 
                     // send account creation successful and verification mail
-                    const verificationLink = Bingo.encryptedLink(); /* 'http://' + DomainName + '/users/verify/?enc=' + encodedData; */
-                    console.log(verificationLink);
-                    res
-                        .status(201)
-                        .json({
-                          message: 'Success! Find verification link in E-mail',
-                          encData: encodedData,
-                          link: verificationLink,
-                          details: doc,
+                    const verificationLink = jwtLinker.encryptedLink();
+
+                    sgMailer
+                        .configure(
+                            {
+                              from: MAIL,
+                              replyTo: MAIL,
+                              content: [
+                                'plain',
+                                [
+                                  sgMailer
+                                      .createText(
+                                          signUpMail(doc, verificationLink)
+                                      ),
+                                ],
+                              ],
+                            }
+                        )
+                        .personalize([{
+                          to: {
+                            email: doc.email,
+                          },
+                          subject: 'Verification Link',
+                        }])
+                        .sendMail()
+                        .then((res) => {
+                          if (res) {
+                            res
+                                .status(201)
+                                .json({
+                                  message:
+                                    `Success! Find verification link in ${
+                                      doc.email
+                                    }`,
+                                  encData: encodedData,
+                                  link: verificationLink,
+                                  details: doc,
+                                });
+                          }
+                        })
+                        .catch((err) => {
+                          throw err;
                         });
                   })
                   .catch((err) => {
@@ -113,7 +153,6 @@ exports.verify = (req, res, next) => {
               message: 'Already Verified!',
             });
           }
-          // res.status(200).json({message: doc});
           User.updateOne({
             _id: doc._id,
           }, {
@@ -121,15 +160,50 @@ exports.verify = (req, res, next) => {
           })
               .exec()
               .then((result) => {
-                // notify user of verification success via mail containing the id as api key
-                const encodedKey = Buffer.from(doc._id.toString()).toString('base64');
+                // notify user of verification success via
+                // mail containing the id as api key
+                const encodedKey =
+                  Buffer
+                      .from(doc._id.toString())
+                      .toString('base64');
 
-                console.log(encodedKey);
-                res
-                    .status(200)
-                    .json({
-                      message: 'Your Account is now Verified!',
-                      key: encodedKey,
+                sgMailer
+                    .configure(
+                        {
+                          from: MAIL,
+                          replyTo: MAIL,
+                          content: [
+                            'plain',
+                            [
+                              sgMailer
+                                  .createText(
+                                      verificationMail(doc, encodedKey)
+                                  ),
+                            ],
+                          ],
+                        }
+                    )
+                    .personalize([{
+                      to: {
+                        email: doc.email,
+                      },
+                      subject: 'API Key',
+                    }])
+                    .sendMail()
+                    .then((res) => {
+                      if (res) {
+                        return (
+                          res
+                              .status(200)
+                              .json({
+                                message: 'Your Account is now Verified!',
+                                key: encodedKey,
+                              })
+                        );
+                      }
+                    })
+                    .catch((err) => {
+                      throw err;
                     });
               })
               .catch((err) => {
@@ -149,7 +223,6 @@ exports.verify = (req, res, next) => {
 };
 
 exports.signIn = (req, res, next) => {
-  // res.status(200).json({ resp: req.body });
   User.findOne({
     email: req.body.email.toLowerCase(),
   })
@@ -166,7 +239,7 @@ exports.signIn = (req, res, next) => {
                   });
             }
             if (result) {
-              Bingo.create({
+              const token = jwtLinker.create({
                 payload: {
                   email: doc.email.toLowerCase(),
                   id: doc._id,
@@ -176,9 +249,9 @@ exports.signIn = (req, res, next) => {
                 },
                 // @ts-ignore
                 key: JWT_KEY,
-              });
+              }).token;
 
-              const token = Bingo.token;
+              // const token = jwtLinker.token;
               if (doc.status) {
                 return res
                     .status(200)
@@ -200,9 +273,6 @@ exports.signIn = (req, res, next) => {
                 message: 'Authentication failed',
               });
             }
-            /* res.status(403).json({
-              message: 'Authentication failed',
-            }); */
           });
         } else {
           res.status(404).json({
@@ -252,31 +322,70 @@ exports.forgot = (req, res, next) => {
       .exec()
       .then((doc) => {
         // encrypt user email
-        Bingo.form({
-          payload: {
-            email: doc.email.toLowerCase(),
-            id: doc._id,
-          },
-          // @ts-ignore
-          key: JWT_KEY,
-          options: {
-            expiresIn: 1800,
-          },
-        }, {
-          mode: 'query',
-          name: 'enc',
-        }, DomainName + '/users/retrieve');
+        const verificationLink =
+          jwtLinker.form({
+            payload: {
+              email: doc.email.toLowerCase(),
+              id: doc._id,
+            },
+            // @ts-ignore
+            key: JWT_KEY,
+            options: {
+              expiresIn: 1800,
+            },
+          }, {
+            mode: 'query',
+            name: 'enc',
+          }, DomainName + '/users/retrieve')
+              .encryptedLink();
 
-        const encodedData = Bingo.token;
-        const verificationLink = Bingo.encryptedLink();
+        const encodedData = jwtLinker.token;
         console.log(verificationLink);
 
         // send a password recovery link to user's mail with authorization check
-
         if (doc) {
-        // send recovery link to email
+          // send recovery link to email
+          sgMailer
+              .configure(
+                  {
+                    from: MAIL,
+                    replyTo: MAIL,
+                    content: [
+                      'plain',
+                      [
+                        sgMailer
+                            .createText(
+                                recoveryLink(doc, verificationLink)
+                            ),
+                      ],
+                    ],
+                  }
+              )
+              .personalize([{
+                to: {
+                  email: doc.email,
+                },
+                subject: 'Recovery Link',
+              }])
+              .sendMail()
+              .then((res) => {
+                if (res) {
+                  return (
+                    res
+                        .status(200)
+                        .json({
+                          message: 'Your Account is now Verified!',
+                          key: encodedKey,
+                        })
+                  );
+                }
+              })
+              .catch((err) => {
+                throw err;
+              });
           res.status(200).json({
-            message: 'Link to recover password has been sent to your Mail',
+            message:
+              'Link to recover password has been sent to your Mail',
             enc: encodedData,
             link: verificationLink,
           });
@@ -291,14 +400,10 @@ exports.forgot = (req, res, next) => {
 
 // forgot password route sent to mail
 exports.retrieve = (req, res, next) => {
-  const data = req.query.enc;/* .replace(new RegExp(' ', 'gi'), '+')*/
-  /* console.log(data);
-  const decodedData = CryptoJS.AES.decrypt(data, urlEncKey).toString(
-      CryptoJS.enc.Utf8
-  ); */
+  const data = req.query.enc;
+
   try {
     const decodedData = JWT.verify(data, JWT_KEY);
-    console.log(decodedData);
 
     User.findOne({
       email: decodedData.email,
@@ -323,13 +428,12 @@ exports.retrieve = (req, res, next) => {
                 })
                     .exec()
                     .then((result) => {
-                      res
+                      return res
                           .status(200)
                           .json({
                             message: 'Operation Successful',
                             result: result.password,
                           });
-                      // notify user of success via mail
                     })
                     .catch((err) => {
                       res
@@ -339,10 +443,6 @@ exports.retrieve = (req, res, next) => {
                           });
                     });
               }
-            });
-          } else {
-            return res.status(403).json({
-              message: '',
             });
           }
         })
@@ -401,16 +501,48 @@ exports.deleteUsers = (req, res, next) => {
           })
               .exec()
               .then((result) => {
-                res.status(200).json({
-                  message: 'Success!',
-                });
+                // notify me and client of this operation
+                sgMailer
+                    .configure(
+                        {
+                          from: MAIL,
+                          replyTo: MAIL,
+                          content: [
+                            'plain',
+                            [
+                              sgMailer
+                                  .createText(
+                                      deleteMail(doc)
+                                  ),
+                            ],
+                          ],
+                        }
+                    )
+                    .personalize([{
+                      to: {
+                        email: doc.email,
+                      },
+                      subject: 'Deleted Account',
+                    }])
+                    .sendMail()
+                    .then((res) => {
+                      if (res) {
+                        return (
+                          res.status(200).json({
+                            message: 'Success!',
+                          })
+                        );
+                      }
+                    })
+                    .catch((err) => {
+                      throw err;
+                    });
               })
               .catch((err) => {
                 res.status(422).json({
                   message: 'Operation failed => ' + err,
                 });
               });
-        // notify me and clint of operation
         } else {
           res.status(404).json({
             message: 'Account doesn\'t exist! => ' + err,
@@ -432,7 +564,14 @@ exports.upgrade = (req, res, next) => {
 
   const rave = new Ravepay(pubKey, secKey, true);
 
-  // This is the Encryption function that encrypts your payload by passing the stringified format and your Encryption Key.
+  // This is the Encryption function that encrypts your
+  // payload by passing the stringified format and your Encryption Key.
+  /**
+   * @function encrypt
+   * @param {String} key
+   * @param {String} text
+   * @return {Object}
+   */
   function encrypt(key, text) {
     const cipher = forge.cipher.createCipher(
         '3DES-ECB',
@@ -474,10 +613,13 @@ exports.upgrade = (req, res, next) => {
               res.status(200).json({
                 message: resp,
               });
-              // Get the ref of the card charge from response body. This will be used to validate the transaction
+              // Get the ref of the card charge from response body.
+              // This will be used to validate the transaction
 
-              // On successful charge, validate the transaction to complete the payment.
-              // We create a payload with public key, and transaction ref obtained from charge response. up here
+              // On successful charge, validate the transaction to
+              // complete the payment.
+              // We create a payload with public key, and transaction
+              // ref obtained from charge response. up here
               /* var payloadresp = {
             PBFPubKey: pubKey,
             transaction_reference: resp.body,
@@ -521,7 +663,8 @@ exports.paymentsResp = (req, res, next) => {
   const hash = req.headers.HTTP_VERIF_HASH;
 
   if (!hash) {
-    // discard the request, only a post with rave signature header gets our attention
+    // discard the request, only a post with
+    // rave signature header gets our attention
     return res.status(400).json({
       body: 'Invalid request',
     });
@@ -532,14 +675,15 @@ exports.paymentsResp = (req, res, next) => {
 
   // check if signatures match
   if (hash !== secretHash) {
-    // silently exit, or check that you are passing the write hash on your server.
+    // silently exit, or check that you
+    // are passing the write hash on your server.
     return res.send(401).json({
       body: '',
     });
   }
 
   // Retrieve the request's body
-  const requestJSON = JSON.parse(req.body);
+  // const requestJSON = JSON.parse(req.body);
 
   // Give value to your customer but don't give any output
   // Remember that this is a call from rave's servers and

@@ -1,6 +1,3 @@
-// 'use strict';
-/* eslint-disable new-cap */
-/* eslint-disable require-jsdoc */
 const JWT = require('jsonwebtoken');
 
 /*
@@ -18,7 +15,7 @@ protocol = 'http',
  * @class Bingo
  * @function form
  * @function create
- * @function JWTSign
+ * @functiojwtWTSign
  * @function encryptedLink
  */
 class Bingo {
@@ -30,9 +27,10 @@ class Bingo {
    * @param {String} URL Preceeding URL
    * @param {String} queryName URL query Name defaults to data
    * @param {String} protocol either HTTP or HTTPS defaults to HTTP
+   * @return {Object} `jwtLinker`
    */
   form(JWTOptions, options, URL,
-      queryName = (options.queryName ? options.queryName : 'data'),
+      queryName = (options.name ? options.name : 'data'),
       protocol = (options.protocol ? options.protocol : 'http')) {
     this.payload = JWTOptions.payload;
     this.JWTKey = JWTOptions.key;
@@ -41,12 +39,21 @@ class Bingo {
     this.name = queryName;
     this.URLString = URL;
     this.protocol = protocol;
+
+    return this;
   }
 
+  /**
+   * @function create
+   * @param {Object} obj
+   * @return {Object} `jwtLinker`
+   */
   create(obj) {
     this.payload = obj.payload;
     this.JWTKey = obj.key;
     this.options = obj.options;
+
+    return this;
   }
 
   /**
@@ -84,10 +91,9 @@ class Bingo {
 
   /**
    * signs the passed configuration
-   * @function JWTSign
+   * @functiojwtWTSign
    * @return {String} JWT Signing
-   */
-  JWTSign() {
+   */jwtWTSign() {
     if (Bingo.checkFields(this)) {
       const errorMessage = new Error('Oops! something went wrong');
       console.log(errorMessage);
@@ -110,11 +116,11 @@ class Bingo {
   }
   /**
    * @function token
-   * @return {String} JWTSign
+   * @return {String} `jwtWTSign`
    */
   get token() {
-    // console.log(this.JWTSign());
-    return this.JWTSign();
+    // console.log(thijwtWTSign());
+    return this.jwtSign();
   }
 
   /**
@@ -124,8 +130,19 @@ class Bingo {
    */
   encryptedLink() {
     // eslint-disable-next-line max-len
-    const encLink = `${this.protocol}://${this.URLString}${this.mode === 'param' ? `/${this.name}/${this.JWTSign()}`
-        : `/?${this.name}=`}${this.JWTSign()}`;
+    const encLink = `${
+      this.protocol
+    }://${
+      this.URLString
+    }${
+      this.mode === 'param' ? `/${
+        this.jwtWTSign()
+      }`
+        : `/?${
+          this.name
+        }=`}${
+      this.jwtWTSign()
+    }`;
     return encLink;
   }
 }
@@ -150,7 +167,7 @@ hey.form({
   mode: 'query',
 }, 'jdbnbnfeubnine');
 console.log(hey.Object);
-console.log(hey.JWTSign());
+console.log(hejwtWTSign());
 console.log(hey.encryptedLink());
  */
 /* const hey = new Bingo();
@@ -164,4 +181,4 @@ hey.create({
   },
 });
 console.log(hey.Object);
-console.log(hey.JWTSign()); */
+console.log(hejwtWTSign()); */

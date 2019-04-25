@@ -2,8 +2,8 @@ var morx = require('morx');
 var q = require('q');
 
 var spec =  morx.spec()
-				.build('otp', 'required:true, eg:5590131743294314')
-				.build('transactionreference', 'required:true, eg:NGN') 
+				.build('otp', 'required:true, eg:4324')
+				.build('transactionreference', 'required:true, eg:5590131743294314') 
 				.end();
 
 function service(data, _rave){

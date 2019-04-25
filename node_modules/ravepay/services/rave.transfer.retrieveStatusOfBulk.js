@@ -4,8 +4,8 @@ var q = require('q');
 //This allows you retrieve status of a bulk transfer
 
 var spec =  morx.spec() 
-				.build('flwref', 'required:false, eg:NGN') 
-				.build('txref', 'required:false, eg:NGN') 
+				.build('flwref', 'required:false, eg:Flw-211')
+				.build('txref', 'required:false, eg:Mc-021') 
 				.end();
 
 function service(_rave, batch_id=""){

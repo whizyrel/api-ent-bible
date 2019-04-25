@@ -2,9 +2,9 @@ var morx = require('morx');
 var q = require('q');
 
 var spec =  morx.spec() 
-				.build('amount', 'required:true, eg:NGN') 
-				.build('card6', 'required:false, eg:NGN') 
-				.build('ptype', 'required:false, eg:NGN')
+				.build('amount', 'required:true, eg:10') 
+				.build('card6', 'required:false, eg:512356') 
+				.build('ptype', 'required:false, eg:visa')
 				.build('currency', 'required:false, eg:NGN') 
 				.end();
 

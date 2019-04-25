@@ -1,7 +1,8 @@
 {
   "env": {
-    "DOMAIN_NAME": "localhost:4445",
-    "URL_ENC_KEY": "gci-secret",
+    "DOMAIN_NAME": "api-ent-bible.herokuapp.com",
+    "DEV_DOMAIN_NAME": "localhost:4445",
+    "URL_ENC_KEY": "treces-icg",
     "JWT_KEY": "nac-egabrag",
     "PUB_KEY": "FLWPUBK-b3b97bb08ff4e97d711c2c0f0fcb524f-X",
     "SEC_KEY": "FLWSECK-af31d45fd614aa557430d41b28fac921-X",
@@ -9,6 +10,7 @@
     "VHOOK": "whvhgci",
     "M_DURI": "mongodb://localhost:27017/bibleStore",
     "M_PURI": "mongodb://whizyrel:Anything5000@ds161183.mlab.com:61183/biblestore",
-    "SG_KEY": "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"
+    "SENDGRID_API_KEY": "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",
+    "MAIL": "olaleyeisrael@gmail.com"
   }
 }

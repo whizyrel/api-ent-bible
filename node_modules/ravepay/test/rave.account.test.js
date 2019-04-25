@@ -5,12 +5,20 @@ var mocha = require('mocha');
 var chai = require('chai');
 var expect = chai.expect;
 var chaiAsPromised = require('chai-as-promised');
+var dotenv = require('dotenv').config();
+
 
 chai.use(chaiAsPromised);
 
+let seckey = process.env.SECRET_KEY;
+let pubkey = process.env.PUBLIC_KEY;
+let prodflag = process.env.PRODUCTION_FLAG;
+
+
 describe("#Rave Account charge test", function() {
     var chargeResp, validationResp;
-    var ravebase = new base("FLWPUBK-e634d14d9ded04eaf05d5b63a0a06d2f-X", "FLWSECK-bb971402072265fb156e90a3578fe5e6-X", false);
+    
+    var ravebase = new base(pubkey, seckey, prodflag);
     var accountInstance = new account(ravebase);
 
     describe("#Rave Account charge leg test", function () {
@@ -52,7 +60,7 @@ describe("#Rave Account charge test", function() {
 
         it("should throw an error txRef is required", function(done) {
             this.timeout(10000);
-            var ravebase = new base("FLWPUBK-e634d14d9ded04eaf05d5b63a0a06d2f-X", "FLWSECK-bb971402072265fb156e90a3578fe5e6-X", false);
+            var ravebase = new base(process.env.PUBLIC_KEY, process.env.SECRET_KEY, process.env.PRODUCTION_FLAG);
             var accountInstance = new account(ravebase);
             var payload = {
                 "accountnumber": "0690000031",

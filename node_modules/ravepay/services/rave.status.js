@@ -2,8 +2,8 @@ var morx = require('morx');
 var q = require('q');
 
 var spec =  morx.spec() 
-				.build('flwref', 'required:false, eg:NGN') 
-				.build('txref', 'required:false, eg:NGN') 
+				.build('flwref', 'required:false, eg:Flw001') 
+				.build('txref', 'required:false, eg:MC-001') 
 				.end();
 
 function service(data, _rave){

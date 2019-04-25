@@ -5,6 +5,8 @@ var mocha = require('mocha');
 var chai = require('chai');
 var expect = chai.expect;
 var chaiAsPromised = require('chai-as-promised');
+var dotenv = require('dotenv');
+
 
 chai.use(chaiAsPromised);
 
@@ -12,15 +14,15 @@ chai.use(chaiAsPromised);
 describe("#Rave Preauth service test", function(){
 
     var chargeResp, validationResp;
-    var ravebase = new base("FLWPUBK-e634d14d9ded04eaf05d5b63a0a06d2f-X", "FLWSECK-bb971402072265fb156e90a3578fe5e6-X", false);
+    var ravebase = new base(process.env.PUBLIC_KEY, process.env.SECRET_KEY, process.env.PRODUCTION_FLAG);
 
     describe("#rave preauthorise card test", function(){
         it("shouldgive  a 200 response status", function(done){
-            var ravebase = new base("FLWPUBK-7adb6177bd71dd43c2efa3f1229e3b7f-X", "FLWSECK-e6db11d1f8a6208de8cb2f94e293450e-X", false);
+            var ravebase = new base(process.env.PUBLIC_KEY, process.env.SECRET_KEY, process.env.PRODUCTION_FLAG);
             var preauthInstance = new preauth(ravebase);
             this.timeout(10000);
             var payload = {
-                "PBFPubKey": "FLWPUBK-7adb6177bd71dd43c2efa3f1229e3b7f-X",
+                "PBFPubKey": process.env.PUBLIC_KEY,
                 "cardno": "5377283645077450",
                 "charge_type": "preauth",
                 "cvv": "789",
@@ -53,7 +55,7 @@ describe("#Rave Preauth service test", function(){
 
         it("should return a an error message that property charge_type is required", function(done){
             this.timeout(10000);
-            var ravebase = new base("FLWPUBK-8cd258c49f38e05292e5472b2b15906e-X", "FLWSECK-c51891678d48c39eff3701ff686bdb69-X", "https://ravesandboxapi.flutterwave.com");
+            var ravebase = new base(process.env.PUBLIC_KEY, process.env.SECRET_KEY, "https://ravesandboxapi.flutterwave.com");
             var preauthInstance = new preauth(ravebase);
             var payload = {
                 "cardno": "5377283645077450",
@@ -82,12 +84,12 @@ describe("#Rave Preauth service test", function(){
     describe("#rave void transaction test", function(){
         it("should return a void successful response", function(done){
             this.timeout(10000);
-            var ravebase = new base("FLWPUBK-8cd258c49f38e05292e5472b2b15906e-X", "FLWSECK-c51891678d48c39eff3701ff686bdb69-X", "https://ravesandboxapi.flutterwave.com");
+            var ravebase = new base(process.env.PUBLIC_KEY, process.env.SECRET_KEY, "https://ravesandboxapi.flutterwave.com");
             var preauthInstance = new preauth(ravebase);
             var payload = {
                 "id": "29518",
                 "action": "void",
-                "SECKEY": "FLWSECK-c51891678d48c39eff3701ff686bdb69-X"
+                "SECKEY": process.env.SECRET_KEY
             }
             var result = preauthInstance.void(payload).then(resp => {
                 return resp.body;
@@ -97,12 +99,12 @@ describe("#Rave Preauth service test", function(){
 
         it("should return a success status in the data object from response.", function(done){
             this.timeout(10000);
-            var ravebase = new base("FLWPUBK-8cd258c49f38e05292e5472b2b15906e-X", "FLWSECK-c51891678d48c39eff3701ff686bdb69-X", "https://ravesandboxapi.flutterwave.com");
+            var ravebase = new base(process.env.PUBLIC_KEY, process.env.SECRET_KEY, "https://ravesandboxapi.flutterwave.com");
             var preauthInstance = new preauth(ravebase);
             var payload = {
                 "id": "29518",
                 "action": "void",
-                "SECKEY": "FLWSECK-c51891678d48c39eff3701ff686bdb69-X"
+                "SECKEY":  process.env.SECRET_KEY
             }
             var result = preauthInstance.void(payload).then(resp => {
                 return resp.body.data;
@@ -114,12 +116,12 @@ describe("#Rave Preauth service test", function(){
     describe("#Rave refund transaction test", function(){
         it("should return a refund complete message", function(done){
             this.timeout(10000);
-            var ravebase = new base("FLWPUBK-8cd258c49f38e05292e5472b2b15906e-X", "FLWSECK-c51891678d48c39eff3701ff686bdb69-X", "https://ravesandboxapi.flutterwave.com");
+            var ravebase = new base(process.env.PUBLIC_KEY, process.env.SECRET_KEY, "https://ravesandboxapi.flutterwave.com");
             var preauthInstance = new preauth(ravebase);
             var payload = {
                 "id": "29508",
                 "action": "refund",
-                "SECKEY": "FLWSECK-c51891678d48c39eff3701ff686bdb69-X"
+                "SECKEY":  process.env.SECRET_KEY
             }
             var result = preauthInstance.void(payload).then(resp => {
                 return resp.body;
@@ -129,12 +131,12 @@ describe("#Rave Preauth service test", function(){
 
         it("should return a success status in the data object from response.", function(done){
             this.timeout(10000);
-            var ravebase = new base("FLWPUBK-8cd258c49f38e05292e5472b2b15906e-X", "FLWSECK-c51891678d48c39eff3701ff686bdb69-X", "https://ravesandboxapi.flutterwave.com");
+            var ravebase = new base(process.env.PUBLIC_KEY, process.env.SECRET_KEY, "https://ravesandboxapi.flutterwave.com");
             var preauthInstance = new preauth(ravebase);
             var payload = {
                 "id": "29508",
                 "action": "refund",
-                "SECKEY": "FLWSECK-c51891678d48c39eff3701ff686bdb69-X"
+                "SECKEY":  process.env.SECRET_KEY
             }
             var result = preauthInstance.void(payload).then(resp => {
                 return resp.body.data;

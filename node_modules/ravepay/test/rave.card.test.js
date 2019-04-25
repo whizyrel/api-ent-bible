@@ -5,6 +5,8 @@ var mocha = require('mocha');
 var chai = require('chai');
 var expect = chai.expect;
 var chaiAsPromised = require('chai-as-promised');
+var dotenv = require('dotenv');
+
 
 chai.use(chaiAsPromised);
 
@@ -12,7 +14,7 @@ describe("#Rave Card Charge Test", function(){
 
     var chargeResp, validationResp;
 
-    var ravebase = new base("FLWPUBK-e634d14d9ded04eaf05d5b63a0a06d2f-X", "FLWSECK-bb971402072265fb156e90a3578fe5e6-X", false);
+    var ravebase = new base(process.env.PUBLIC_KEY, process.env.SECRET_KEY, process.env.PRODUCTION_FLAG);
     var cardInstance = new card(ravebase);
 
     describe("# Rave Charge leg test", function() {
@@ -59,10 +61,10 @@ describe("#Rave Card Charge Test", function(){
 
         it("should throw error email is required", function(done) {
             this.timeout(10000);
-            var ravebase = new base("FLWPUBK-e634d14d9ded04eaf05d5b63a0a06d2f-X", "FLWSECK-bb971402072265fb156e90a3578fe5e6-X", "https://ravesandboxapi.flutterwave.com");
+            var ravebase = new base(process.env.PUBLIC_KEY, process.env.SECRET_KEY, "https://ravesandboxapi.flutterwave.com");
             var cardInstance = new card(ravebase);
             var payload = {
-                "PBFPubKey": "FLWPUBK-e634d14d9ded04eaf05d5b63a0a06d2f-X",
+                "PBFPubKey": process.env.PUBLIC_KEY,
                 "cardno": "5438898014560229",
                 "cvv": "789",
                 "expirymonth": "07",

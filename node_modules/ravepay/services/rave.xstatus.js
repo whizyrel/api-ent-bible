@@ -2,10 +2,10 @@ var morx = require('morx');
 var q = require('q');
 
 var spec =  morx.spec() 
-				.build('flwref', 'required:false,map:flwref, eg:NGN') 
-				.build('txref', 'required:false,map:txref, eg:NGN') 
-				.build('last_attempt', 'required:false, eg:NGN')
-				.build('only_successful', 'required:false, eg:NGN')
+				.build('flwref', 'required:false,map:flwref, eg:FLW001') 
+				.build('txref', 'required:false,map:txref, eg:MC-001') 
+				.build('last_attempt', 'required:false')
+				.build('only_successful', 'required:false')
 				.end();
 
 function service(data, _rave){

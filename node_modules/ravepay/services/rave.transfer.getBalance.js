@@ -46,7 +46,7 @@ module.exports = service;
 
 // payload = {
 // 	"currency": "NGN",
-// 	"seckey": "FLWSECK-6577e947f692e979e2d306ab4ce0a282-X"
+// 	"seckey": ""
 // }
 
 // service(payload, R).then((err, res) => {

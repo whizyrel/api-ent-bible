@@ -4,30 +4,30 @@
   "description": "provides bible resource services for consumption",
   "main": "server.js",
   "dependencies": {
-    "@types/node": "^10.12.10",
+    "@types/node": "^10.14.4",
     "bcrypt": "^3.0.5",
     "body-parser": "^1.18.3",
     "crypto": "^1.0.1",
     "crypto-js": "^3.1.9-1",
     "express": "^4.16.4",
-    "jsonwebtoken": "^8.4.0",
+    "jsonwebtoken": "^8.5.1",
     "md5": "^2.2.1",
-    "mongoose": "^5.4.4",
+    "mongoose": "^5.4.22",
     "morgan": "^1.9.1",
     "multer": "^1.4.1",
     "node-forge": "^0.7.6",
-    "nodemon": "^1.18.9",
-    "ravepay": "^1.2.0",
+    "ravepay": "^1.2.1",
     "sendgrid": "^5.2.3",
     "ts-node": "^7.0.1",
-    "utf8": "^3.0.0"
+    "utf8": "^3.0.0",
+    "nodemon": "^1.18.10"
   },
   "engines": {
     "npm": "6.x",
     "node": "11.x"
   },
   "devDependencies": {
-    "nodemon": "^1.18.9"
+    "nodemon": "^1.18.10"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -43,11 +43,11 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/whizyrel/bibleAPI.git"
+    "url": "git+https://github.com/whizyrel/api-ent-bible.git"
   },
   "bugs": {
-    "url": "https://github.com/whizyrel/bibleAPI/issues"
+    "url": "https://github.com/whizyrel/api-ent-bible/issues"
   },
-  "homepage": "https://github.com/whizyrel/bibleAPI#readme",
+  "homepage": "https://github.com/whizyrel/api-ent-bible#readme",
   "heroku-run-build-script": true
 }

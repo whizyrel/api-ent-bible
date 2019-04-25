@@ -6,7 +6,7 @@ var Security   = require('./security');
 
 var RaveBase = function (public_key, secret_key, base_url_or_production_flag) {
 	RaveUtils.emptyCheck(public_key, 'Public Key required');
-	RaveUtils.emptyCheck(secret_key,     'Secret Key required');
+	RaveUtils.emptyCheck(secret_key, 'Secret Key required');
 
 	var public_key = public_key;
 	var secret_key     = secret_key;

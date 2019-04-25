@@ -1,9 +1,10 @@
 var morx = require('morx');
 var q = require('q');
 
+
 var spec =  morx.spec()
-				.build('otp', 'required:true, eg:5590131743294314')
-				.build('transaction_reference', 'required:true, eg:NGN') 
+				.build('otp', 'required:true, eg:5590')
+				.build('transaction_reference', 'required:false, eg:FLW-MOCK-17e915bec5a86f4b92b358ce6d72144e') 
 				.end();
 
 function service(data, _rave){
@@ -25,7 +26,6 @@ function service(data, _rave){
 	})
 	.then( response => {
 
-		//console.log(response);
 		d.resolve(response);
 
 	})
@@ -42,3 +42,18 @@ function service(data, _rave){
 }
 service.morxspc = spec;
 module.exports = service;
+
+payload = {
+	"otp": "328568",
+	"transaction_reference": "FLW123641042",
+}
+
+service(payload, R).then((err, res) => {
+	if(err){
+		console.log(err)
+	}else{
+		console.log(res)
+	}
+}).catch(err => {
+	console.log(err)
+})

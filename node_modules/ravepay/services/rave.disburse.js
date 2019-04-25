@@ -2,10 +2,10 @@ var morx = require('morx');
 var q = require('q');
 
 var spec =  morx.spec() 
-				.build('bank_code', 'required:true, eg:NGN') 
-				.build('account_number', 'required:true, eg:NGN') 
+				.build('bank_code', 'required:true, eg:044') 
+				.build('account_number', 'required:true, eg:0017704603') 
 				.build('currency', 'required:true, eg:NGN') 
-				.build('amount', 'required:true, eg:NGN')  
+				.build('amount', 'required:true, eg:100')  
 				.end();
 
 function service(data, _rave){

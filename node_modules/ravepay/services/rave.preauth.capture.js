@@ -17,6 +17,7 @@ function service(data, _rave) {
     })
     .then(params => {
         params.SECKEY = _rave.getSecretKey();
+    
         return _rave.request('/flwv3-pug/getpaidx/api/capture', params);
     })
     .then(resp => {

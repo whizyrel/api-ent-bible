@@ -8,7 +8,7 @@ var q = require('q');
 var spec =  morx.spec()
                 .build('recipientaccount', 'required:required,eg:0690000034')
                 .build('destbankcode', 'required:required,eg:044')
-                .build('PBFPubKey', 'required:required,eg:FLWPUBK-3899c4a996764a5d061ede002fa390f3-X')
+                .build('PBFPubKey', 'required:required,eg:FLWPUBK-XXXXXXXXX-X')
                 .end();
 
 
@@ -49,7 +49,7 @@ module.exports = service;
 // payload = {
 //     "recipientaccount": "0690000034",
 //     "destbankcode": "044",
-//     "PBFPubKey": "FLWPUBK-4e9d4e37974a61157ce8ca4f43c84936-X"
+//     "PBFPubKey": ""
 //   }
 
 // service(payload, R).then((err, res) => {

@@ -1,6 +1,7 @@
 var morx = require('morx');
 var q = require('q');
 
+
 var spec =  morx.spec()
 				.build('token', 'required:false')
 				.build('currency', 'required:false, eg:NGN')
@@ -12,8 +13,9 @@ var spec =  morx.spec()
 				.build('IP', 'required:true, eg:127.0.0.1')
 				.build('narration', 'required:false, eg:89938910')  
 				.build('txRef', 'required:true, eg:443342') 
-				.build('meta', 'required:false')  
+				.build('meta', 'required:false')
 				.build('device_fingerprint', 'required:false,eg:12233')
+				.build('subaccounts', 'required:false')
 				.end();
 
 function service(data, _rave){

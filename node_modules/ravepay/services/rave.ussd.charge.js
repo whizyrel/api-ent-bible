@@ -6,7 +6,7 @@ var spec =  morx.spec()
 				.build('currency', 'required:false, eg:NGN') 
 				.build('country', 'required:false, eg:NG')    
 				.build('amount', 'required:true, eg:10') 
-				.build('phonenumber', 'required:true, eg:10') 
+				.build('phonenumber', 'required:true, eg:08032145678') 
 				.build('email', 'required:true, eg:debowalefaulkner@gmail.com')
 				.build('firstname', 'required:false, eg:lawal')
 				.build('lastname', 'required:false, eg:garuba')
@@ -17,7 +17,7 @@ var spec =  morx.spec()
 				.build('device_fingerprint', 'required:false,eg:12233') 
 				.build('accountbank', 'required:true, eg:044')
 				.build('accountnumber', 'required:true,validators:isNumeric, eg:06900021')
-				.build('include_integrity_hash', 'required:false,eg:2017-05-10')		
+				.build('include_integrity_hash', 'required:false')		
 				.end();
 
 
