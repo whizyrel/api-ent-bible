@@ -30,7 +30,7 @@ exports.signUp = (req, res, next) => {
       .select('-_id -__v')
       .exec()
       .then((result) => {
-        if (result) {
+        if (!result) {
           bcrypt.hash(req.body.password, 10, (err, hash) => {
             if (err) {
               return res.status(500)
