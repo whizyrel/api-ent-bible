@@ -1,5 +1,5 @@
 const {
-  PUB_KEY: pubKey, SEC_KEY: secKey, ENC_KEY: encKey,
+  /* PUB_KEY: pubKey, SEC_KEY: secKey, ENC_KEY: encKey, */
   JWT_KEY: JWT_KEY, DOMAIN_NAME: DomainName, SENDGRID_API_KEY,
   MAIL,
 } = process.env;
