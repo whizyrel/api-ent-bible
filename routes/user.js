@@ -1,5 +1,5 @@
 // eslint-disable-next-line new-cap
-const Route = require('express').Route();
+const Route = require('express').Router();
 
 const {
   signUp, signIn,

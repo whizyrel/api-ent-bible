@@ -6,8 +6,8 @@ const {
 
 const bcrypt = require('bcrypt');
 const JWT = require('jsonwebtoken');
-const forge = require('node-forge');
-const Ravepay = require('ravepay');
+/* const forge = require('node-forge');
+const Ravepay = require('ravepay'); */
 
 const User = require('../models/user');
 
@@ -557,12 +557,13 @@ exports.deleteUsers = (req, res, next) => {
 };
 
 exports.upgrade = (req, res, next) => {
-  const txRef = 'MC-' + Date.now() + 'GCI';
+/*  const txRef = 'MC-' + Date.now() + 'GCI';
 
   // i guess in dollar equivalent
   const amount = '30000';
 
   const rave = new Ravepay(pubKey, secKey, true);
+  */
 
   // This is the Encryption function that encrypts your
   // payload by passing the stringified format and your Encryption Key.
@@ -572,7 +573,7 @@ exports.upgrade = (req, res, next) => {
    * @param {String} text
    * @return {Object}
    */
-  function encrypt(key, text) {
+  /*  function encrypt(key, text) {
     const cipher = forge.cipher.createCipher(
         '3DES-ECB',
         // @ts-ignore
@@ -612,15 +613,15 @@ exports.upgrade = (req, res, next) => {
             .then((resp) => {
               res.status(200).json({
                 message: resp,
-              });
-              // Get the ref of the card charge from response body.
-              // This will be used to validate the transaction
+              }); */
+  // Get the ref of the card charge from response body.
+  // This will be used to validate the transaction
 
-              // On successful charge, validate the transaction to
-              // complete the payment.
-              // We create a payload with public key, and transaction
-              // ref obtained from charge response. up here
-              /* var payloadresp = {
+  // On successful charge, validate the transaction to
+  // complete the payment.
+  // We create a payload with public key, and transaction
+  // ref obtained from charge response. up here
+  /* var payloadresp = {
             PBFPubKey: pubKey,
             transaction_reference: resp.body,
             otp: ""
@@ -639,8 +640,8 @@ exports.upgrade = (req, res, next) => {
               // Handle error
               res.status(404).json({ message: err });
             }); */
-              // change accountType to premium, notify me and client
-            })
+  // change accountType to premium, notify me and client
+  /* })
             .catch((err) => {
               // Handle error
               res.status(404).json({
@@ -655,11 +656,11 @@ exports.upgrade = (req, res, next) => {
         res.status(404).json({
           message: 'Operation failed => ' + err,
         });
-      });
+      }); */
 };
 
 exports.paymentsResp = (req, res, next) => {
-  // retrieve the signature from the header
+  /* // retrieve the signature from the header
   const hash = req.headers.HTTP_VERIF_HASH;
 
   if (!hash) {
@@ -691,7 +692,7 @@ exports.paymentsResp = (req, res, next) => {
 
   // notify me of payment and notify my client by mail
 
-  res.send(200);
+  res.send(200); */
 };
 
 // upgrade, webhook, mails, frontend

@@ -224,7 +224,7 @@ MailMgr.setKey(mailMgr,
   'jXGMgd3KAXmtWHwr70ENRDSLzsJ-D7Ny-Z-pyv2ceco'
 );
 
-
+/*
 console.log(
     mailMgr
         .configure(
@@ -232,10 +232,10 @@ console.log(
               from: ['olaleyeisrael@gmail.com', 'Israel Oluwole'],
               replyTo: 'subject',
               content: [
-                /* 'here', */
-                /* [ */'plain', ['hello there!'/* , 'value 2' */]/* ] */,
-                /* 'value', */
+                plain', ['hello there!'],
+                // 'value',
               ],
             }
-        ).personalize([])/* .request.body.reply_to */
+        ).personalize([])
 );
+ */
