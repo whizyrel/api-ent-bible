@@ -6,8 +6,6 @@ const {
 
 const bcrypt = require('bcrypt');
 const JWT = require('jsonwebtoken');
-/* const forge = require('node-forge');
-const Ravepay = require('ravepay'); */
 
 const User = require('../models/user');
 
@@ -18,6 +16,8 @@ const {
   recoveryLink, deleteMail,
 } = require('../resources/email-messages');
 
+/* const forge = require('node-forge');
+const Ravepay = require('ravepay'); */
 // const CryptoJS = require('crypto-js');
 /* const md5 = require("md5");;
 const utf8 = require("utf8"); */
