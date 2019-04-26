@@ -75,7 +75,7 @@ exports.signUp = (req, res, next) => {
                         .configure(
                             {
                               from: MAIL,
-                              replyTo: MAIL,
+                              replyTo: '',
                               content: [
                                 'plain',
                                 [

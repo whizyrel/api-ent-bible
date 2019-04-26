@@ -1,7 +1,14 @@
 const sg = require('sendgrid');
 
+const {
+  signUpMail, /* verificationMail,
+  recoveryLink, deleteMail, */
+} = require('../resources/email-messages');
+
 /**
  * @Class MailMgr
+ * @function configure
+ * @function personalize
  */
 class MailMgr {
   /**
@@ -119,15 +126,24 @@ class MailMgr {
   }
 
   /**
-   * @function setKey
-   * @param {String} cl
+   * @function keepKey
+   * @param {Srting} cl
    * @param {Object} key
    * @return {Obejct} `cl`
    */
-  static setKey(cl, key) {
-    cl.sg = sg(key);
+  static keepKey(cl, key) {
+    cl.key = key;
     return cl;
   }
+
+  /**
+   * @function getSG
+   * @return {Object} `sg`
+   */
+  static getSG() {
+    return sg(this.key);
+  }
+
 
   /**
    * @function errMsg
@@ -145,7 +161,7 @@ class MailMgr {
   */
   personalize(array) {
     this.request =
-      this.sg
+      MailMgr.getSG()
           .emptyRequest({
             method: this.method,
             path: this.path,
@@ -203,39 +219,64 @@ class MailMgr {
 
   /**
   * @function sendMail
-  * @param {Object} sg
-  * @return {Object} Object
+  * @return {Object} `Promise` Object
   */
   sendMail() {
-    return this.sg
-    // eslint-disable-next-line new-cap
+    /* console.log(
+        MailMgr
+            .getSG()
+    ); */
+    return MailMgr
+        .getSG()
+        // eslint-disable-next-line new-cap
         .API(this.request);
   }
 }
 
 module.exports = (key) => {
-  return MailMgr.setKey(new MailMgr(), key);
+  return MailMgr.keepKey(new MailMgr(), key);
 };
 
 const mailMgr = new MailMgr();
 
-MailMgr.setKey(mailMgr,
-    'SG.-GMXJgBTSkiK9MEeLFlHTw.' +
-  'jXGMgd3KAXmtWHwr70ENRDSLzsJ-D7Ny-Z-pyv2ceco'
+MailMgr.keepKey(
+    mailMgr,
+    'SG.NpGyj1-LT2OKxaaGz2GM5Q.92_U9lPaQ0-' +
+    'EZbpRfPNnbHFwAXsxl9oVnuZYbKm_K98'
 );
 
-/*
-console.log(
-    mailMgr
-        .configure(
-            {
-              from: ['olaleyeisrael@gmail.com', 'Israel Oluwole'],
-              replyTo: 'subject',
-              content: [
-                plain', ['hello there!'],
-                // 'value',
-              ],
-            }
-        ).personalize([])
-);
- */
+// console.log(
+mailMgr
+    .configure(
+        {
+          from: 'olaleyeisrael@gmail.com',
+          replyTo: 'test',
+          content: [
+            'plain',
+            [
+              mailMgr
+                  .createText(
+                      signUpMail(
+                          {
+                            firstname: 'israel',
+                          }, 'verificationLink'
+                      )
+                  ),
+            ],
+          ],
+        }
+    ).personalize([{
+      to: {
+        email: 'olaleyeisrael@gmail.com',
+      },
+      subject: 'Verification Link',
+    }]).sendMail()
+    .then((res) => {
+      if (res) {
+        console.log(res);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+// );
