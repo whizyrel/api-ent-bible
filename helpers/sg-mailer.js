@@ -245,6 +245,7 @@ MailMgr.keepKey(
     'EZbpRfPNnbHFwAXsxl9oVnuZYbKm_K98'
 );
 
+// console.log(mailMgr.key);
 // console.log(
 mailMgr
     .configure(
@@ -277,6 +278,6 @@ mailMgr
       }
     })
     .catch((err) => {
-      console.log(err);
+      console.log(err.response.body.errors);
     });
 // );

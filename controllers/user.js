@@ -75,7 +75,7 @@ exports.signUp = (req, res, next) => {
                         .configure(
                             {
                               from: MAIL,
-                              replyTo: '',
+                              replyTo: 'Sign Up',
                               content: [
                                 'plain',
                                 [
@@ -110,7 +110,9 @@ exports.signUp = (req, res, next) => {
                           }
                         })
                         .catch((err) => {
-                          throw err;
+                          return res.status(500).json({
+                            message: err + ': An error occurred => ' + err,
+                          });
                         });
                   })
                   .catch((err) => {
@@ -171,7 +173,7 @@ exports.verify = (req, res, next) => {
                     .configure(
                         {
                           from: MAIL,
-                          replyTo: MAIL,
+                          replyTo: 'Account Verification',
                           content: [
                             'plain',
                             [
@@ -203,7 +205,9 @@ exports.verify = (req, res, next) => {
                       }
                     })
                     .catch((err) => {
-                      throw err;
+                      return res.status(500).json({
+                        message: err + ': An error occurred => ' + err,
+                      });
                     });
               })
               .catch((err) => {
@@ -349,7 +353,7 @@ exports.forgot = (req, res, next) => {
               .configure(
                   {
                     from: MAIL,
-                    replyTo: MAIL,
+                    replyTo: 'Forgot Credentials',
                     content: [
                       'plain',
                       [
@@ -381,7 +385,9 @@ exports.forgot = (req, res, next) => {
                 }
               })
               .catch((err) => {
-                throw err;
+                return res.status(500).json({
+                  message: err + ': An error occurred => ' + err,
+                });
               });
           res.status(200).json({
             message:
@@ -506,7 +512,7 @@ exports.deleteUsers = (req, res, next) => {
                     .configure(
                         {
                           from: MAIL,
-                          replyTo: MAIL,
+                          replyTo: 'Account Cancelation',
                           content: [
                             'plain',
                             [
@@ -535,7 +541,9 @@ exports.deleteUsers = (req, res, next) => {
                       }
                     })
                     .catch((err) => {
-                      throw err;
+                      return res.status(500).json({
+                        message: err + ': An error occurred => ' + err,
+                      });
                     });
               })
               .catch((err) => {
