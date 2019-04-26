@@ -9,7 +9,6 @@
     "ENC_KEY": "af31d45fd6140290ad74423e",
     "VHOOK": "whvhgci",
     "M_DURI": "mongodb://localhost:27017/bibleStore",
-    "M_PURI": "mongodb://whizyrel:Anything5000@ds161183.mlab.com:61183/biblestore",
     "MAIL": "olaleyeisrael@gmail.com"
   }
 }
