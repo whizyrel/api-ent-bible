@@ -55,7 +55,11 @@ module.exports = (() => {
         head: `Welcome! ${
           doc.firstname
         },`,
-        body: `Your Account has been deleted.`,
+        body: `Sadly, Your Account has been deleted.${
+          '\n'
+        }We hope to have you join again.${
+          '\n'
+        }Thanks all the way`,
         foot: `(c) ${
           new Date()
               .getFullYear()

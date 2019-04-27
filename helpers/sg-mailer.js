@@ -1,10 +1,5 @@
 const sg = require('sendgrid');
 
-/* const {
-  signUpMail, verificationMail,
-  recoveryLink, deleteMail,
-} = require('../resources/email-messages'); */
-
 /**
  * @Class MailMgr
  * @function configure
@@ -236,49 +231,3 @@ class MailMgr {
 module.exports = (key) => {
   return MailMgr.keepKey(new MailMgr(), key);
 };
-
-// const mailMgr = new MailMgr();
-
-/* MailMgr.keepKey(
-    mailMgr,
-    'SG.NpGyj1-LT2OKxaaGz2GM5Q.92_U9lPaQ0-' +
-    'EZbpRfPNnbHFwAXsxl9oVnuZYbKm_K98'
-);
-
-// console.log(mailMgr.key);
-// console.log(
-mailMgr
-    .configure(
-        {
-          from: 'olaleyeisrael@gmail.com',
-          replyTo: 'test',
-          content: [
-            'plain',
-            [
-              mailMgr
-                  .createText(
-                      signUpMail(
-                          {
-                            firstname: 'israel',
-                          }, 'verificationLink'
-                      )
-                  ),
-            ],
-          ],
-        }
-    ).personalize([{
-      to: {
-        email: 'olaleyeisrael@gmail.com',
-      },
-      subject: 'Verification Link',
-    }]).sendMail()
-    .then((res) => {
-      if (res) {
-        console.log(res);
-      }
-    })
-    .catch((err) => {
-      console.log(err.response.body.errors);
-    });
-// );
- */

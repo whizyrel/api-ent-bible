@@ -142,7 +142,7 @@ exports.verify = (req, res, next) => {
 
   try {
     const decodedData = JWT.verify(token, JWT_KEY);
-    console.log(decodedData);
+
     User.findOne({
       email: decodedData.email,
     })
@@ -211,18 +211,19 @@ exports.verify = (req, res, next) => {
                     });
               })
               .catch((err) => {
-                res.status(500).json({
+                return res.status(500).json({
                   message: 'Operation failed => ' + err,
                 });
               });
         })
         .catch((err) => {
-          res.status(500).json({
+          return res.status(500).json({
             message: 'Operation failed => ' + err,
           });
         });
   } catch (err) {
-    res.status(401).json({message: 'Authentication failed'});
+    return res.status(401)
+        .json({message: 'Authentication failed'});
   }
 };
 
@@ -234,58 +235,60 @@ exports.signIn = (req, res, next) => {
       .exec()
       .then((doc) => {
         if (doc) {
-          bcrypt.compare(req.body.password, doc.password, (err, result) => {
-            if (err) {
-              return res
-                  .status(401)
-                  .json({
-                    message: 'Authentication failed!',
-                  });
-            }
-            if (result) {
-              const token = jwtLinker.create({
-                payload: {
-                  email: doc.email.toLowerCase(),
-                  id: doc._id,
-                },
-                options: {
-                  expiresIn: '2h',
-                },
-                // @ts-ignore
-                key: JWT_KEY,
-              }).token;
+          bcrypt.compare(
+              req.body.password, doc.password,
+              (err, result) => {
+                if (err) {
+                  return res
+                      .status(401)
+                      .json({
+                        message: 'Authentication failed!',
+                      });
+                }
+                if (result) {
+                  const token = jwtLinker.create({
+                    payload: {
+                      email: doc.email.toLowerCase(),
+                      id: doc._id,
+                    },
+                    options: {
+                      expiresIn: '2h',
+                    },
+                    // @ts-ignore
+                    key: JWT_KEY,
+                  }).token;
 
-              // const token = jwtLinker.token;
-              if (doc.status) {
-                return res
-                    .status(200)
-                    .json({
-                      message: 'Authentication Successful',
-                      token: token,
-                      details: doc,
-                    });
-              } else {
-                return res
-                    .status(403)
-                    .json({
-                      message: 'Unverified! Check your mail for link',
-                    });
-              // probably consider didnt get verification link
-              }
-            } else {
-              return res.status(401).json({
-                message: 'Authentication failed',
+                  // const token = jwtLinker.token;
+                  if (doc.status) {
+                    return res
+                        .status(200)
+                        .json({
+                          message: 'Authentication Successful',
+                          token: token,
+                          details: doc,
+                        });
+                  } else {
+                    return res
+                        .status(403)
+                        .json({
+                          message: 'Unverified! Check your mail for link',
+                        });
+                    // probably consider didnt get verification link
+                  }
+                } else {
+                  return res.status(401).json({
+                    message: 'Authentication failed',
+                  });
+                }
               });
-            }
-          });
         } else {
-          res.status(404).json({
+          return res.status(404).json({
             message: 'Acount doesn\'t exist',
           });
         }
       })
       .catch((err) => {
-        res.status(500).json({
+        return res.status(500).json({
           message: 'Operation failed => ' + err,
         });
       });
@@ -305,13 +308,13 @@ exports.modify = (req, res, next) => {
   })
       .exec()
       .then((result) => {
-        res.status(200).json({
+        return res.status(200).json({
           message: 'Operation Successful',
         });
       // notify user of success
       })
       .catch((err) => {
-        res.status(500).json({
+        return res.status(500).json({
           message: 'Operation failed => ' + err,
         });
       });
@@ -344,7 +347,6 @@ exports.forgot = (req, res, next) => {
               .encryptedLink();
 
         const encodedData = jwtLinker.token;
-        console.log(verificationLink);
 
         // send a password recovery link to user's mail with authorization check
         if (doc) {
@@ -375,11 +377,12 @@ exports.forgot = (req, res, next) => {
               .then((res) => {
                 if (res) {
                   return (
-                    res
-                        .status(200)
+                    res.status(200)
                         .json({
-                          message: 'Your Account is now Verified!',
-                          key: encodedKey,
+                          message:
+                        'Link to recover password has been sent to your Mail',
+                          enc: encodedData,
+                          link: verificationLink,
                         })
                   );
                 }
@@ -389,16 +392,10 @@ exports.forgot = (req, res, next) => {
                   message: err + ': An error occurred => ' + err,
                 });
               });
-          res.status(200).json({
-            message:
-              'Link to recover password has been sent to your Mail',
-            enc: encodedData,
-            link: verificationLink,
-          });
         }
       })
       .catch((err) => {
-        res.status(500).json({
+        return res.status(500).json({
           message: 'Operation failed => ' + err,
         });
       });
@@ -454,11 +451,11 @@ exports.retrieve = (req, res, next) => {
         })
         .catch((err) => {
           return res.status(500).json({
-            message: 'Operation failed',
+            message: 'Operation failed '+ err,
           });
         });
   } catch (err) {
-    res.status(401).json({message: 'Authentication failed'});
+    return res.status(401).json({message: 'Authentication failed'});
   }
 };
 
@@ -473,17 +470,17 @@ exports.listUsers = (req, res, next) => {
               .select('-__v')
               .exec()
               .then((docs) => {
-                res.status(200).json({
-                  results: docs,
+                return res.status(200).json({
+                  result: docs,
                 });
               })
               .catch((err) => {
-                res.status(500).json({
+                return res.status(500).json({
                   message: 'An error occured => ' + err,
                 });
               });
         } else {
-          res.status(409).json({
+          return res.status(409).json({
             message: 'Authentication failed',
           });
         }
@@ -547,18 +544,18 @@ exports.deleteUsers = (req, res, next) => {
                     });
               })
               .catch((err) => {
-                res.status(422).json({
+                return res.status(422).json({
                   message: 'Operation failed => ' + err,
                 });
               });
         } else {
-          res.status(404).json({
+          return res.status(404).json({
             message: 'Account doesn\'t exist! => ' + err,
           });
         }
       })
       .catch((err) => {
-        res.status(404).json({
+        return res.status(404).json({
           message: 'Operation failed => ' + err,
         });
       });
