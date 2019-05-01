@@ -1,9 +1,11 @@
 /* eslint-disable new-cap */
-/* eslint-disable max-len */
 const express = require('express');
 const multer = require('multer');
 
-const feedbackCtrl = require('../controllers/feedback');
+const {
+  submitFeedback, listFeedbacks,
+  editFeedbacks,
+} = require('../controllers/feedback');
 const checkAuth = require('../middlewares/check-auth');
 
 const route = express.Router();
@@ -18,7 +20,9 @@ const storage = multer.diskStorage({
 });
 
 const fileFilter = function(req, file, cb) {
-  const condition = 'file.mimeType == \'image/jpeg\' || file.mimeType == \'image/png\' || file.mimeType == \'image/jpg\' || file.mimeType == \'image/bmp\'';
+  const condition =
+    'file.mimeType == \'image/jpeg\' || file.mimeType == \'image/png\' ||' +
+  'file.mimeType == \'image/jpg\' || file.mimeType == \'image/bmp\'';
   if (condition) {
     cb(null, true);
   } else {
@@ -35,10 +39,13 @@ const uploads = multer({
   },
 });
 
-route.post('/submit', uploads.fields([{name: 'imagePaths'}]), feedbackCtrl.submitFeedback);
+route.post('/submit',
+    uploads.fields([{name: 'imagePaths'}]),
+    submitFeedback
+);
 
-route.get('/list', checkAuth, feedbackCtrl.listFeedbacks);
+route.get('/list', checkAuth, listFeedbacks);
 
-route.patch('/archive/:id', checkAuth, feedbackCtrl.editFeedbacks);
+route.patch('/archive/:id', checkAuth, editFeedbacks);
 
 module.exports = route;

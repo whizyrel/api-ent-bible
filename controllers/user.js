@@ -88,9 +88,9 @@ exports.signUp = (req, res, next) => {
                             }
                         )
                         .personalize([{
-                          to: {
+                          to: [{
                             email: doc.email,
-                          },
+                          }],
                           subject: 'Verification Link',
                         }])
                         .sendMail()
@@ -186,9 +186,9 @@ exports.verify = (req, res, next) => {
                         }
                     )
                     .personalize([{
-                      to: {
+                      to: [{
                         email: doc.email,
-                      },
+                      }],
                       subject: 'API Key',
                     }])
                     .sendMail()
@@ -368,9 +368,9 @@ exports.forgot = (req, res, next) => {
                   }
               )
               .personalize([{
-                to: {
+                to: [{
                   email: doc.email,
-                },
+                }],
                 subject: 'Recovery Link',
               }])
               .sendMail()
@@ -522,9 +522,9 @@ exports.deleteUsers = (req, res, next) => {
                         }
                     )
                     .personalize([{
-                      to: {
+                      to: [{
                         email: doc.email,
-                      },
+                      }],
                       subject: 'Deleted Account',
                     }])
                     .sendMail()

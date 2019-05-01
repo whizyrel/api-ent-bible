@@ -1,12 +1,13 @@
-const express = require('express');
-const checkAuth = require("../middlewares/check-auth");
+const route = require('express').Router();
 
-const route = express.Router();
+const checkAuth = require('../middlewares/check-auth');
 
-const DonationCtrl = require('../controllers/donation');
+const {
+  give, list,
+} = require('../controllers/donation');
 
-route.post('/give', DonationCtrl.give);
+route.post('/give', give);
 
-route.get('/list', checkAuth, DonationCtrl.list);
+route.get('/list', checkAuth, list);
 
 module.exports = route;
