@@ -4,13 +4,13 @@ const route = express.Router();
 const {
   getAll, getBook, getChapter,
   getVerse,
-} = require('../controllers/api');
+} = require('../../controllers/api');
 
-const apiAuth = require('../middlewares/api-auth');
+const apiAuth = require('../../middlewares/api-auth');
 const {
   checkAll, checkBookQuery,
   checkChapQuery, checkVrsQuery,
-} = require('../middlewares/api-req-parser');
+} = require('../../middlewares/api-req-parser');
 
 
 // [route] list all [queries: bible version] --> books
