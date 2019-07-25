@@ -8,23 +8,22 @@ const {
 
 const apiAuth = require('../../middlewares/api-auth');
 const {
-  checkAll, checkBookQuery,
-  checkChapQuery, checkVrsQuery,
-} = require('../../middlewares/api-req-parser');
+  checkQuery,
+} = require('../../middlewares/v2/api-req-parser');
 
 
 // [route] list all [queries: bible version] --> books
 // [updates] queries for bible versions
-route.get('/all', apiAuth, checkAll, getAll);
+route.get('/all', apiAuth, checkQuery, getAll);
 
 // [route] list [queries : bible version, book]--> book
-route.get('/bks', apiAuth, checkBookQuery, getBook);
+route.get('/bks/:wh', apiAuth, checkQuery, getBook);
 
 // [route] list [queries : bible version, book and chapter]--> chapter
-route.get('/chp', apiAuth, checkChapQuery, getChapter);
+route.get('/chp/:wh', /* apiAuth, */ checkQuery, getChapter);
 
 // [route] list [queries : bible version, book, chapter, verse]--> verses
-route.get('/vrs', apiAuth, checkVrsQuery, getVerse);
+route.get('/vrs/:wh', apiAuth, checkQuery, getVerse);
 
 module.exports = route;
 

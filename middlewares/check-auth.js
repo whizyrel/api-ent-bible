@@ -16,13 +16,13 @@ module.exports = (req, res, next) => {
           if (doc.length >= 1) {
             next();
           } else {
-            res.status(401).json({
+            return res.status(401).json({
               message: 'Unauthorized Access',
             });
           }
         })
         .catch((err) => {
-          res.status(404).json({
+          return res.status(404).json({
             error: err + ': Something went wrong',
           });
         });

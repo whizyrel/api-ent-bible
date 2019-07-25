@@ -1,14 +1,22 @@
 /* eslint-disable max-len */
 exports.checkAll = (req, res, next) => {
-  if (req.query && req.query.vrsn) {
+  const {query: {vrsn}} = req;
+
+  if (req.query && vrsn) {
     next();
   } else {
-    res.status(404).json({message: 'Invalid Request. Please check your queries'});
+    res.status(404).json(
+        {
+          message: 'Invalid Request. Please check your queries',
+        }
+    );
   }
 };
 
 exports.checkBookQuery = (req, res, next) => {
-  if (req.query && req.query.vrsn && req.query.bk) {
+  const {query: {vrsn, bk}} = req;
+
+  if (req.query && vrsn && bk) {
     next();
   } else {
     res
@@ -18,7 +26,9 @@ exports.checkBookQuery = (req, res, next) => {
 };
 
 exports.checkChapQuery = (req, res, next) => {
-  if (req.query && req.query.vrsn && req.query.bk && req.query.chp) {
+  const {query: {vrsn, bk, chp}} = req;
+
+  if (req.query && vrsn && bk && chp) {
     next();
   } else {
     res
@@ -28,7 +38,11 @@ exports.checkChapQuery = (req, res, next) => {
 };
 
 exports.checkVrsQuery = (req, res, next) => {
-  if (req.query && req.query.vrsn && req.query.bk && req.query.chp && req.query.vrs) {
+  const {query: {vrsn, bk, chp, vrs}} = req;
+  if (
+    req.query && vrsn
+    && bk && chp && vrs
+  ) {
     next();
   } else {
     res

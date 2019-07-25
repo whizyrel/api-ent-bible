@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 // @ts-ignore
 const morgan = require('morgan');
+const app = express();
 
 const Feedback = require('./routes/feedback');
 const v1Api = require('./routes/v1/api');
@@ -14,7 +15,6 @@ const Commentary = require('./routes/commentary');
 const AdminCommentary = require('./routes/admin/commentary');
 const Donations = require('./routes/donation');
 
-const app = express();
 
 // [middleware] using morgan
 app.use(morgan('dev'));
@@ -60,8 +60,8 @@ app.use('/users', Users);
 
 // [api] user routes
 // @ts-ignore
-app.use('v1/api', v1Api);
-app.use('v2/api', v2Api);
+app.use('/v1/api', v1Api);
+app.use('/v2/api', v2Api);
 
 // [api] admin routes
 // @ts-ignore
