@@ -84,6 +84,16 @@ app.use((req, res, next) => {
   next(error);
 });
 
+// route "/"
+app.get('/', (req, res, next) => {
+  return res.send(
+      `Welcome to my door step, i previously put an error message for you.
+      I guess this is friendlier. I am glad you visited me,
+      visit my documentation for more on how ican help with your requests.`
+  );
+  next();
+});
+
 // [middleware] global catch error, final stop
 // @ts-ignore
 app.use((error, req, res, next) => {

@@ -1,5 +1,6 @@
 const Chapter = require('../models/chapter');
 const booksTitle = require('../resources/books-title');
+const shortCodes = require('../resources/short-codes');
 
 // @ts-ignore
 exports.parseNumReq = (arr) => {

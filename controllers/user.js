@@ -24,8 +24,14 @@ const utf8 = require("utf8"); */
 // const Encryption = require('../helpers/encryption');
 
 exports.signUp = (req, res, next) => {
+  const {
+    body: {
+      firstname, lastname, organisation,
+      address, email, accountType,
+    },
+  } = req;
   User.findOne({
-    email: req.body.email.toLowerCase(),
+    email: email.toLowerCase(),
   })
       .select('-_id -__v')
       .exec()
@@ -38,23 +44,24 @@ exports.signUp = (req, res, next) => {
               });
             } else {
               const details = {
-                firstname: req.body.firstname,
-                lastname: req.body.lastname,
-                organisation: req.body.organisation,
-                address: req.body.address,
-                email: req.body.email.toLowerCase(),
+                firstname: firstname,
+                lastname: lastname,
+                organisation: organisation,
+                address: address,
+                email: email.toLowerCase(),
                 password: hash,
-                accountType: req.body.accountType,
-                package: req.body.package,
+                accountType: accountType,
+                package: req.package,
               };
 
               User.create(details)
                   .then((doc) => {
+                    const {email} = doc;
                     // notify user of success via mail with verification link
                     jwtLinker.form(
                         {
                           payload: {
-                            email: doc.email.toLowerCase(),
+                            email: email.toLowerCase(),
                             id: doc._id,
                           },
                           // @ts-ignore
@@ -74,36 +81,36 @@ exports.signUp = (req, res, next) => {
                     const verificationLink = jwtLinker.encryptedLink();
                     const encodedData = jwtLinker.token;
 
-                    res.status(201).json({
-                      message: `Success! Find verification link in ${doc.email}`,
+                    return res.status(201).json({
+                      message: `Success! Find verification link ${doc.email}`,
                       encData: encodedData,
                       link: verificationLink,
                       details: doc,
                     });
                   })
                   .catch((err) => {
-                    res.status(500).json({
+                    return res.status(500).json({
                       message: 'Couldn\'t create Account => ' + err,
                     });
                   });
             }
           });
         } else {
-          res.status(409).json({
+          return res.status(409).json({
             message: 'Account already exists',
           });
         }
       })
       .catch((err) => {
-        res.status(500).json({
+        return res.status(500).json({
           message: 'An error occurred => ' + err,
         });
       });
 };
 
 exports.verify = (req, res, next) => {
-  const token = req.query.enc;
-  console.log(req.query.enc);
+  const {query: {enc: token}} = req;
+  console.log(enc);
 
   try {
     const decodedData = JWT.verify(token, JWT_KEY);
@@ -158,8 +165,10 @@ exports.verify = (req, res, next) => {
 };
 
 exports.signIn = (req, res, next) => {
+  const {body: {email}} = req;
+
   User.findOne({
-    email: req.body.email.toLowerCase(),
+    email: email.toLowerCase(),
   })
       .select('-__v')
       .exec()
@@ -174,7 +183,7 @@ exports.signIn = (req, res, next) => {
             if (result) {
               const token = jwtLinker.create({
                 payload: {
-                  email: doc.email.toLowerCase(),
+                  email: email.toLowerCase(),
                   id: doc._id,
                 },
                 options: {
@@ -333,7 +342,7 @@ exports.retrieve = (req, res, next) => {
                       });
                     })
                     .catch((err) => {
-                      res.status(500).json({
+                      return res.status(500).json({
                         message: 'Operation failed => ' + err,
                       });
                     });
