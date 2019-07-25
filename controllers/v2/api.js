@@ -7,8 +7,10 @@ const shortCodes = require('../../resources/short-codes');
 // @ts-ignore
 exports.getAll = (req, res, next) => {
   const {query: {vrsn}} = req;
+
   //  vrsn=kjv&key=5c02a6aa8fc2261e18e46849
   const requests = vrsn.toLowerCase().split('|');
+
   Chapter.find({
     version: {
       $in: requests,
@@ -35,7 +37,8 @@ exports.getAll = (req, res, next) => {
 
 // @ts-ignore
 exports.getBook = (req, res, next) => {
-  const {query: {bk}} = req;
+  const {query} = req;
+
   // vrsn=kjv&bk=genesis-ezra%7Cmatthew-john%7cjoshua&key='insert key here'
   const reqArr = bk.split('|').map((cur) => shortCodes[cur]);
   console.log({req: reqArr});
@@ -45,7 +48,7 @@ exports.getBook = (req, res, next) => {
 
 // @ts-ignore
 exports.getChapter = (req, res, next) => {
-  const {query: {chp, vrsn, bk}} = req;
+  const {query: {vrsn}} = req;
   // ?vrsn=kjv&bk=genesis&chp=1&vrs=5-8|3-5|1-2&key='insert key here'
   const reqArr = chp.split('|');
   const requests = parseChapReq(reqArr);
