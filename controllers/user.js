@@ -1,7 +1,8 @@
 const {
   /* PUB_KEY: pubKey, SEC_KEY: secKey, ENC_KEY: encKey, */
-  JWT_KEY: JWT_KEY, DOMAIN_NAME: DomainName, SENDGRID_API_KEY,
-  MAIL,
+  JWT_KEY: JWT_KEY,
+  DOMAIN_NAME: DomainName,
+  /* MAIL, */
 } = process.env;
 
 const bcrypt = require('bcrypt');
@@ -9,12 +10,11 @@ const JWT = require('jsonwebtoken');
 
 const User = require('../models/user');
 
-const sgMailer = require('../helpers/sg-mailer')(SENDGRID_API_KEY);
 const jwtLinker = require('../helpers/jwt-sign-enc-link-generator');
-const {
+/* const {
   signUpMail, verificationMail,
   recoveryLink, deleteMail,
-} = require('../resources/email-messages');
+} = require('../resources/email-messages'); */
 
 /* const forge = require('node-forge');
 const Ravepay = require('ravepay'); */
@@ -33,10 +33,9 @@ exports.signUp = (req, res, next) => {
         if (!result) {
           bcrypt.hash(req.body.password, 10, (err, hash) => {
             if (err) {
-              return res.status(500)
-                  .json({
-                    message: 'An error occured',
-                  });
+              return res.status(500).json({
+                message: 'An error occured',
+              });
             } else {
               const details = {
                 firstname: req.body.firstname,
@@ -52,75 +51,40 @@ exports.signUp = (req, res, next) => {
               User.create(details)
                   .then((doc) => {
                     // notify user of success via mail with verification link
-                    jwtLinker.form({
-                      payload: {
-                        email: doc.email.toLowerCase(),
-                        id: doc._id,
-                      },
-                      // @ts-ignore
-                      key: JWT_KEY,
-                      options: {
-                        expiresIn: 31622400,
-                      },
-                    }, {
-                      mode: 'query',
-                      name: 'enc',
-                    }, DomainName + '/users/verify');
-                    const encodedData = jwtLinker.token;
+                    jwtLinker.form(
+                        {
+                          payload: {
+                            email: doc.email.toLowerCase(),
+                            id: doc._id,
+                          },
+                          // @ts-ignore
+                          key: JWT_KEY,
+                          options: {
+                            expiresIn: 31622400,
+                          },
+                        },
+                        {
+                          mode: 'query',
+                          name: 'enc',
+                        },
+                        DomainName + '/users/verify'
+                    );
 
                     // send account creation successful and verification mail
                     const verificationLink = jwtLinker.encryptedLink();
+                    const encodedData = jwtLinker.token;
 
-                    sgMailer
-                        .configure(
-                            {
-                              from: MAIL,
-                              replyTo: 'Sign Up',
-                              content: [
-                                'plain',
-                                [
-                                  sgMailer
-                                      .createText(
-                                          signUpMail(doc, verificationLink)
-                                      ),
-                                ],
-                              ],
-                            }
-                        )
-                        .personalize([{
-                          to: [{
-                            email: doc.email,
-                          }],
-                          subject: 'Verification Link',
-                        }])
-                        .sendMail()
-                        .then((res) => {
-                          if (res) {
-                            res
-                                .status(201)
-                                .json({
-                                  message:
-                                    `Success! Find verification link in ${
-                                      doc.email
-                                    }`,
-                                  encData: encodedData,
-                                  link: verificationLink,
-                                  details: doc,
-                                });
-                          }
-                        })
-                        .catch((err) => {
-                          return res.status(500).json({
-                            message: err + ': An error occurred => ' + err,
-                          });
-                        });
+                    res.status(201).json({
+                      message: `Success! Find verification link in ${doc.email}`,
+                      encData: encodedData,
+                      link: verificationLink,
+                      details: doc,
+                    });
                   })
                   .catch((err) => {
-                    res
-                        .status(500)
-                        .json({
-                          message: 'Couldn\'t create Account => ' + err,
-                        });
+                    res.status(500).json({
+                      message: 'Couldn\'t create Account => ' + err,
+                    });
                   });
             }
           });
@@ -129,7 +93,8 @@ exports.signUp = (req, res, next) => {
             message: 'Account already exists',
           });
         }
-      }).catch((err) => {
+      })
+      .catch((err) => {
         res.status(500).json({
           message: 'An error occurred => ' + err,
         });
@@ -149,66 +114,32 @@ exports.verify = (req, res, next) => {
         .select('-__v')
         .exec()
         .then((doc) => {
-          // check if user is verified
+        // check if user is verified
           if (doc.status === true) {
             return res.status(403).json({
               message: 'Already Verified!',
             });
           }
-          User.updateOne({
-            _id: doc._id,
-          }, {
-            status: true,
-          })
+          User.updateOne(
+              {
+                _id: doc._id,
+              },
+              {
+                status: true,
+              }
+          )
               .exec()
               .then((result) => {
                 // notify user of verification success via
                 // mail containing the id as api key
-                const encodedKey =
-                  Buffer
-                      .from(doc._id.toString())
-                      .toString('base64');
+                const encodedKey = Buffer.from(doc._id.toString()).toString(
+                    'base64'
+                );
 
-                sgMailer
-                    .configure(
-                        {
-                          from: MAIL,
-                          replyTo: 'Account Verification',
-                          content: [
-                            'plain',
-                            [
-                              sgMailer
-                                  .createText(
-                                      verificationMail(doc, encodedKey)
-                                  ),
-                            ],
-                          ],
-                        }
-                    )
-                    .personalize([{
-                      to: [{
-                        email: doc.email,
-                      }],
-                      subject: 'API Key',
-                    }])
-                    .sendMail()
-                    .then((res) => {
-                      if (res) {
-                        return (
-                          res
-                              .status(200)
-                              .json({
-                                message: 'Your Account is now Verified!',
-                                key: encodedKey,
-                              })
-                        );
-                      }
-                    })
-                    .catch((err) => {
-                      return res.status(500).json({
-                        message: err + ': An error occurred => ' + err,
-                      });
-                    });
+                return res.status(200).json({
+                  message: 'Your Account is now Verified!',
+                  key: encodedKey,
+                });
               })
               .catch((err) => {
                 return res.status(500).json({
@@ -222,8 +153,7 @@ exports.verify = (req, res, next) => {
           });
         });
   } catch (err) {
-    return res.status(401)
-        .json({message: 'Authentication failed'});
+    return res.status(401).json({message: 'Authentication failed'});
   }
 };
 
@@ -235,52 +165,44 @@ exports.signIn = (req, res, next) => {
       .exec()
       .then((doc) => {
         if (doc) {
-          bcrypt.compare(
-              req.body.password, doc.password,
-              (err, result) => {
-                if (err) {
-                  return res
-                      .status(401)
-                      .json({
-                        message: 'Authentication failed!',
-                      });
-                }
-                if (result) {
-                  const token = jwtLinker.create({
-                    payload: {
-                      email: doc.email.toLowerCase(),
-                      id: doc._id,
-                    },
-                    options: {
-                      expiresIn: '2h',
-                    },
-                    // @ts-ignore
-                    key: JWT_KEY,
-                  }).token;
-
-                  // const token = jwtLinker.token;
-                  if (doc.status) {
-                    return res
-                        .status(200)
-                        .json({
-                          message: 'Authentication Successful',
-                          token: token,
-                          details: doc,
-                        });
-                  } else {
-                    return res
-                        .status(403)
-                        .json({
-                          message: 'Unverified! Check your mail for link',
-                        });
-                    // probably consider didnt get verification link
-                  }
-                } else {
-                  return res.status(401).json({
-                    message: 'Authentication failed',
-                  });
-                }
+          bcrypt.compare(req.body.password, doc.password, (err, result) => {
+            if (err) {
+              return res.status(401).json({
+                message: 'Authentication failed!',
               });
+            }
+            if (result) {
+              const token = jwtLinker.create({
+                payload: {
+                  email: doc.email.toLowerCase(),
+                  id: doc._id,
+                },
+                options: {
+                  expiresIn: '2h',
+                },
+                // @ts-ignore
+                key: JWT_KEY,
+              }).token;
+
+              // const token = jwtLinker.token;
+              if (doc.status) {
+                return res.status(200).json({
+                  message: 'Authentication Successful',
+                  token: token,
+                  details: doc,
+                });
+              } else {
+                return res.status(403).json({
+                  message: 'Unverified! Check your mail for link',
+                });
+              // probably consider didnt get verification link
+              }
+            } else {
+              return res.status(401).json({
+                message: 'Authentication failed',
+              });
+            }
+          });
         } else {
           return res.status(404).json({
             message: 'Acount doesn\'t exist',
@@ -301,11 +223,14 @@ exports.modify = (req, res, next) => {
     ops[opt.key] = opt.value;
   }
 
-  User.updateOne({
-    _id: req.userData.id,
-  }, {
-    $set: ops,
-  })
+  User.updateOne(
+      {
+        _id: req.userData.id,
+      },
+      {
+        $set: ops,
+      }
+  )
       .exec()
       .then((result) => {
         return res.status(200).json({
@@ -328,70 +253,38 @@ exports.forgot = (req, res, next) => {
   })
       .exec()
       .then((doc) => {
-        // encrypt user email
-        const verificationLink =
-          jwtLinker.form({
-            payload: {
-              email: doc.email.toLowerCase(),
-              id: doc._id,
-            },
-            // @ts-ignore
-            key: JWT_KEY,
-            options: {
-              expiresIn: 1800,
-            },
-          }, {
-            mode: 'query',
-            name: 'enc',
-          }, DomainName + '/users/retrieve')
-              .encryptedLink();
+      // encrypt user email
+        const verificationLink = jwtLinker
+            .form(
+                {
+                  payload: {
+                    email: doc.email.toLowerCase(),
+                    id: doc._id,
+                  },
+                  // @ts-ignore
+                  key: JWT_KEY,
+                  options: {
+                    expiresIn: 1800,
+                  },
+                },
+                {
+                  mode: 'query',
+                  name: 'enc',
+                },
+                DomainName + '/users/retrieve'
+            )
+            .encryptedLink();
 
         const encodedData = jwtLinker.token;
 
         // send a password recovery link to user's mail with authorization check
         if (doc) {
-          // send recovery link to email
-          sgMailer
-              .configure(
-                  {
-                    from: MAIL,
-                    replyTo: 'Forgot Credentials',
-                    content: [
-                      'plain',
-                      [
-                        sgMailer
-                            .createText(
-                                recoveryLink(doc, verificationLink)
-                            ),
-                      ],
-                    ],
-                  }
-              )
-              .personalize([{
-                to: [{
-                  email: doc.email,
-                }],
-                subject: 'Recovery Link',
-              }])
-              .sendMail()
-              .then((res) => {
-                if (res) {
-                  return (
-                    res.status(200)
-                        .json({
-                          message:
-                        'Link to recover password has been sent to your Mail',
-                          enc: encodedData,
-                          link: verificationLink,
-                        })
-                  );
-                }
-              })
-              .catch((err) => {
-                return res.status(500).json({
-                  message: err + ': An error occurred => ' + err,
-                });
-              });
+        // send recovery link to email
+          return res.status(200).json({
+            message: 'Link to recover password has been sent to your Mail',
+            enc: encodedData,
+            link: verificationLink,
+          });
         }
       })
       .catch((err) => {
@@ -422,28 +315,27 @@ exports.retrieve = (req, res, next) => {
                 });
               }
               if (hash) {
-                User.update({
-                  email: decodedData.email.toLowerCase(),
-                }, {
-                  $set: {
-                    password: hash,
-                  },
-                })
+                User.update(
+                    {
+                      email: decodedData.email.toLowerCase(),
+                    },
+                    {
+                      $set: {
+                        password: hash,
+                      },
+                    }
+                )
                     .exec()
                     .then((result) => {
-                      return res
-                          .status(200)
-                          .json({
-                            message: 'Operation Successful',
-                            result: result.password,
-                          });
+                      return res.status(200).json({
+                        message: 'Operation Successful',
+                        result: result.password,
+                      });
                     })
                     .catch((err) => {
-                      res
-                          .status(500)
-                          .json({
-                            message: 'Operation failed => ' + err,
-                          });
+                      res.status(500).json({
+                        message: 'Operation failed => ' + err,
+                      });
                     });
               }
             });
@@ -451,7 +343,7 @@ exports.retrieve = (req, res, next) => {
         })
         .catch((err) => {
           return res.status(500).json({
-            message: 'Operation failed '+ err,
+            message: 'Operation failed ' + err,
           });
         });
   } catch (err) {
@@ -505,43 +397,9 @@ exports.deleteUsers = (req, res, next) => {
               .exec()
               .then((result) => {
                 // notify me and client of this operation
-                sgMailer
-                    .configure(
-                        {
-                          from: MAIL,
-                          replyTo: 'Account Cancelation',
-                          content: [
-                            'plain',
-                            [
-                              sgMailer
-                                  .createText(
-                                      deleteMail(doc)
-                                  ),
-                            ],
-                          ],
-                        }
-                    )
-                    .personalize([{
-                      to: [{
-                        email: doc.email,
-                      }],
-                      subject: 'Deleted Account',
-                    }])
-                    .sendMail()
-                    .then((res) => {
-                      if (res) {
-                        return (
-                          res.status(200).json({
-                            message: 'Success!',
-                          })
-                        );
-                      }
-                    })
-                    .catch((err) => {
-                      return res.status(500).json({
-                        message: err + ': An error occurred => ' + err,
-                      });
-                    });
+                return res.status(200).json({
+                  message: 'Success!',
+                });
               })
               .catch((err) => {
                 return res.status(422).json({
@@ -562,14 +420,13 @@ exports.deleteUsers = (req, res, next) => {
 };
 
 exports.upgrade = (req, res, next) => {
-/*  const txRef = 'MC-' + Date.now() + 'GCI';
+  /*  const txRef = 'MC-' + Date.now() + 'GCI';
 
   // i guess in dollar equivalent
   const amount = '30000';
 
   const rave = new Ravepay(pubKey, secKey, true);
   */
-
   // This is the Encryption function that encrypts your
   // payload by passing the stringified format and your Encryption Key.
   /**
@@ -621,7 +478,6 @@ exports.upgrade = (req, res, next) => {
               }); */
   // Get the ref of the card charge from response body.
   // This will be used to validate the transaction
-
   // On successful charge, validate the transaction to
   // complete the payment.
   // We create a payload with public key, and transaction

@@ -1,16 +1,17 @@
 const express = require('express');
+const route = express.Router();
 
 const {
   getAll, getBook, getChapter,
   getVerse,
 } = require('../controllers/api');
+
 const apiAuth = require('../middlewares/api-auth');
 const {
   checkAll, checkBookQuery,
   checkChapQuery, checkVrsQuery,
 } = require('../middlewares/api-req-parser');
 
-const route = express.Router();
 
 // [route] list all [queries: bible version] --> books
 // [updates] queries for bible versions
