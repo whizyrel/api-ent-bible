@@ -8,6 +8,6 @@ const route = express.Router();
 route.post('/create', adminCtrl.addResource);
 
 // edit resource component
-route.patch("/modify", adminCtrl.editResource);
+route.patch('/modify', adminCtrl.editResource);
 
 module.exports = route;

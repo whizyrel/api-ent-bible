@@ -4,7 +4,7 @@ const route = express.Router();
 const {
   getAll, getBook, getChapter,
   getVerse,
-} = require('../../controllers/api');
+} = require('../../controllers/v1/api');
 
 const apiAuth = require('../../middlewares/api-auth');
 const {

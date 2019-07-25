@@ -1,10 +1,14 @@
 const Chapter = require('../../models/chapter');
-const helpers = require('../../helpers/req-parser');
+const {
+  getRes, parseStringReq, parseChapReq, parseNumReq,
+} = require('../../helpers/req-parser');
+const shortCodes = require('../../resources/short-codes');
 
 // @ts-ignore
 exports.getAll = (req, res, next) => {
+  const {query: {vrsn}} = req;
   //  vrsn=kjv&key=5c02a6aa8fc2261e18e46849
-  const requests = req.query.vrsn.toLowerCase().split('|');
+  const requests = vrsn.toLowerCase().split('|');
   Chapter.find({
     version: {
       $in: requests,
@@ -18,12 +22,12 @@ exports.getAll = (req, res, next) => {
             request: docs,
           });
         }
-        res.status(422).json({
+        return res.status(422).json({
           message: 'please check your queries again',
         });
       })
       .catch((err) => {
-        res.status(400).json({
+        return res.status(400).json({
           message: err + 'Something went wrong!',
         });
       });
@@ -31,20 +35,22 @@ exports.getAll = (req, res, next) => {
 
 // @ts-ignore
 exports.getBook = (req, res, next) => {
+  const {query: {bk}} = req;
   // vrsn=kjv&bk=genesis-ezra%7Cmatthew-john%7cjoshua&key='insert key here'
-  const reqArr = req.query.bk.split('|');
-  helpers.getRes(helpers.parseStringReq(reqArr), req, res);
+  const reqArr = bk.split('|');
+  getRes(parseStringReq(reqArr), req, res);
 };
 
 // @ts-ignore
 exports.getChapter = (req, res, next) => {
+  const {query: {chp, vrsn, bk}} = req;
   // ?vrsn=kjv&bk=genesis&chp=1&vrs=5-8|3-5|1-2&key='insert key here'
-  const reqArr = req.query.chp.split('|');
-  const requests = helpers.parseChapReq(reqArr);
+  const reqArr = chp.split('|');
+  const requests = parseChapReq(reqArr);
 
   Chapter.find({
-    version: req.query.vrsn.toLowerCase(),
-    bookTitle: req.query.bk.toLowerCase(),
+    version: vrsn.toLowerCase(),
+    bookTitle: bk.toLowerCase(),
     chapterNo: {
       $in: requests,
     },
@@ -56,12 +62,12 @@ exports.getChapter = (req, res, next) => {
             request: docs,
           });
         }
-        res.status(422).json({
+        return res.status(422).json({
           message: 'please check your queries again',
         });
       })
       .catch((err) => {
-        res.status(400).json({
+        return res.status(400).json({
           error: err + 'Something went wrong',
         });
       });
@@ -69,15 +75,16 @@ exports.getChapter = (req, res, next) => {
 
 // @ts-ignore
 exports.getVerse = (req, res, next) => {
+  const {query: {vrs, chp, bk}} = req;
   // ?vrsn=kjv&bk=revelation&chp=18-15|1&vrs=4&&key='insert key here'
-  const reqArr = req.query.vrs.split('|');
+  const reqArr = vrs.split('|');
   // do something about repeated verses coming from designated helper function
-  const requests = helpers.parseNumReq(reqArr).sort(function(a, b) {
+  const requests = parseNumReq(reqArr).sort(function(a, b) {
     return a - b;
   });
 
   const chapters = helpers
-      .parseNumReq(req.query.chp.split('|'))
+      .parseNumReq(chp.split('|'))
       .sort(function(a, b) {
         return a - b;
       })
@@ -86,8 +93,8 @@ exports.getVerse = (req, res, next) => {
       });
 
   Chapter.find({
-    version: req.query.vrsn.toLowerCase(),
-    bookTitle: req.query.bk.toLowerCase(),
+    version: vrsn.toLowerCase(),
+    bookTitle: bk.toLowerCase(),
     chapterNo: {
       $in: chapters,
     },

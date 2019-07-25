@@ -1,20 +1,24 @@
-const express = require('express');
+const app = require('express')();
 const mongoose = require('mongoose');
 
 const config = require('./app');
 
-const app = express();
+const {M_PURI, M_DURI, PORT} = process.env;
 
 mongoose
     .connect(
-        process.env.M_PURI,
+        M_PURI || M_DURI,
         {
           useNewUrlParser: true,
           useCreateIndex: true,
           autoIndex: true,
         }
     )
-    .then((resp) => console.log(`[Mongodb Server] started on port 27017`))
+    .then(
+        (resp) => console.log(
+            `[Mongodb Server] started on port ${resp.connections[0].port}`
+        )
+    )
     .catch((err) => console.log(err));
 // @ts-ignore
 mongoose.Promise = global.Promise;
@@ -24,9 +28,8 @@ app.use(config);
 
 // [port] specifying ports: environment || specific port
 // @ts-ignore
-const port = process.env.PORT || 4445;
 
 // [port] listening to port with cb
-app.listen(port, () => {
-  console.log(`[Server] started on port ${port}`);
+app.listen(PORT || 4445, () => {
+  console.log(`[Server] started on port ${PORT}`);
 });
