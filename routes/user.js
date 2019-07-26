@@ -10,6 +10,31 @@ const {
 } = require('../controllers/user');
 const checkAuth = require('../middlewares/check-auth');
 
+
+// generate api key
+
+// revoke key
+
+// delete key
+
+// add permissions
+
+// remove permissions
+
+// [get] user lists/details from db --> admin
+Route.get('/lists', checkAuth, listUsers);
+
+// [delete] delete users from db --> user && admin
+Route.delete('/delete', checkAuth, deleteUsers);
+
+// [upgrade] upgrade users access --> user after payment
+Route.patch('/upgrade', checkAuth, upgrade);
+
+// payments webhook
+Route.post('/payments', paymentsResp);
+
+module.exports = Route;
+
 // // [Routes]
 // // [post] add users to db --> admin
 // Route.post('/signup', signUp);
@@ -29,19 +54,6 @@ const checkAuth = require('../middlewares/check-auth');
 // // [patch] edit user details in db --> user && admin
 // Route.patch('/modify', checkAuth, modify);
 
-// [get] user lists/details from db --> admin
-Route.get('/lists', checkAuth, listUsers);
-
-// [delete] delete users from db --> user && admin
-Route.delete('/delete', checkAuth, deleteUsers);
-
-// [upgrade] upgrade users access --> user after payment
-Route.patch('/upgrade', checkAuth, upgrade);
-
-// payments webhook
-Route.post('/payments', paymentsResp);
-
 // authentication gives access to each Route either admin || user
 // [user keys] PATCH --> db --> edit users information
 // [admin keys] PUT, DELETE, PATCH, GET --> db --> users
-module.exports = Route;
