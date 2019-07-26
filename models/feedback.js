@@ -1,9 +1,9 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
 const Feedback = new Schema({
-  date: { type: String },
+  date: {type: String},
   time: {type: String},
   name: String,
   email: {
@@ -11,13 +11,13 @@ const Feedback = new Schema({
     required: true,
     match: [
       /[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?/,
-      "invalid email"
-    ]
+      'invalid email',
+    ],
   },
   imagePaths: [String],
   title: String,
   body: String,
-  status: { type: String, default: "fresh" }
+  status: {type: String, default: 'fresh'},
 });
 
-module.exports = mongoose.model("Feedback", Feedback);
+module.exports = mongoose.model('Feedback', Feedback);

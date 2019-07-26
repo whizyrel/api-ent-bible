@@ -6,7 +6,7 @@ const {
   getVerse,
 } = require('../../controllers/v2/api');
 
-const apiAuth = require('../../middlewares/api-auth');
+const apiAuth = require('../../middlewares/v2/api-auth');
 const {
   checkQuery,
 } = require('../../middlewares/v2/api-req-parser');
