@@ -8,18 +8,23 @@ const {
   listUsers, deleteUsers,
   upgrade, paymentsResp,
 } = require('../controllers/user');
-const checkAuth = require('../middlewares/check-auth');
+const checkAuth = require('../middlewares/v2/check-auth');
 
 
 // generate api key
+Route.put('/k/g', checkAuth);
 
 // revoke key
+Route.put('/k/rvk', checkAuth);
 
 // delete key
+Route.put('/k/dlt', checkAuth);
 
 // add permissions
+Route.put('/k/p/add', checkAuth);
 
 // remove permissions
+Route.put('/k/p/rm', checkAuth);
 
 // [get] user lists/details from db --> admin
 Route.get('/lists', checkAuth, listUsers);

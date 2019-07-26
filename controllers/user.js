@@ -23,7 +23,27 @@ const Ravepay = require('ravepay'); */
 const utf8 = require("utf8"); */
 // const Encryption = require('../helpers/encryption');
 
+exports.generateKey = (req, res, next) => {
 
+};
+
+exports.revokeKey = (req, res, next) => {
+
+};
+
+exports.deleteKey = (req, res, next) => {
+
+};
+
+exports.addPermission = (req, res, next) => {
+
+};
+
+exports.removePermission = (req, res, next) => {
+
+};
+
+// users would be pulled from api-collection
 exports.listUsers = (req, res, next) => {
   User.findOne({
     _id: req.userData.id,
