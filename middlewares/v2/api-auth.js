@@ -12,3 +12,12 @@ module.exports = (req, res, next) => {
     });
   }
 };
+
+/*
+  generate api key
+    - authenticate against gci db using email
+  revoke key
+  delete key
+  add permissions
+  remove permissions
+*/
