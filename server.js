@@ -31,5 +31,5 @@ app.use(config);
 
 // [port] listening to port with cb
 app.listen(PORT || 4445, () => {
-  console.log(`[Server] started on port ${PORT}`);
+  console.log(`[Server] started on port ${PORT || 4445}`);
 });

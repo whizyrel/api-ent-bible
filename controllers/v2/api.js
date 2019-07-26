@@ -2,7 +2,6 @@ const Chapter = require('../../models/chapter');
 const {
   getRes, parseStringReq, parseChapReq, parseNumReq,
 } = require('../../helpers/req-parser');
-const shortCodes = require('../../resources/short-codes');
 
 // @ts-ignore
 exports.getAll = (req, res, next) => {
@@ -37,7 +36,7 @@ exports.getAll = (req, res, next) => {
 
 // @ts-ignore
 exports.getBook = (req, res, next) => {
-  const {query} = req;
+  const {query: {bk}} = req;
 
   // vrsn=kjv&bk=genesis-ezra%7Cmatthew-john%7cjoshua&key='insert key here'
   const reqArr = bk.split('|').map((cur) => shortCodes[cur]);
