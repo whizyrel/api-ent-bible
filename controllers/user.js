@@ -1,16 +1,4 @@
-const {
-  /* PUB_KEY: pubKey, SEC_KEY: secKey, ENC_KEY: encKey, */
-  JWT_KEY: JWT_KEY,
-  DOMAIN_NAME: DomainName,
-  /* MAIL, */
-} = process.env;
-
-const bcrypt = require('bcrypt');
-const JWT = require('jsonwebtoken');
-
-const User = require('../models/user');
-
-const jwtLinker = require('../helpers/jwt-sign-enc-link-generator');
+const api = require('../models/api-collection');
 /* const {
   signUpMail, verificationMail,
   recoveryLink, deleteMail,
@@ -44,6 +32,9 @@ exports.removePermission = (req, res, next) => {
 };
 
 // users would be pulled from api-collection
+/*
+  - consider updating user information
+*/
 exports.listUsers = (req, res, next) => {
   User.findOne({
     _id: req.userData.id,

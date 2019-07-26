@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-module.exports = mongoose.model('api-collection', new Schema({
+module.exports = mongoose.model('api-collection', new mongoose.Schema({
   key: {
     type: String,
     required: true,
