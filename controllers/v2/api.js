@@ -39,7 +39,7 @@ exports.getBook = (req, res, next) => {
   const {query: {bk}} = req;
 
   // vrsn=kjv&bk=genesis-ezra%7Cmatthew-john%7cjoshua&key='insert key here'
-  const reqArr = bk.split('|').map((cur) => shortCodes[cur]);
+  const reqArr = bk.split('|');
   console.log({req: reqArr});
 
   getRes(parseStringReq(reqArr), req, res);
