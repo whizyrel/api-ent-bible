@@ -14,6 +14,12 @@ module.exports = mongoose.model('api-collection', new Schema({
     required: true,
     default: {},
   },
+  access: {
+    type: Boolean,
+    reqired: true,
+    default: true,
+    enum: [true, false],
+  },
 }));
 
 // oList - opera | Opera | intldella@gmail.com
