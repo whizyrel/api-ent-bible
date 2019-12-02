@@ -5,7 +5,7 @@ const {
   // signUp, signIn,
   // verify, forgot, retrieve,
   // modify,
-  generateKey, revokeKey,
+  generateKey, revokeKey, deleteKey,
   listUsers, deleteUsers,
   upgrade, paymentsResp,
 } = require('../controllers/user');
@@ -19,7 +19,7 @@ Route.post('/k/g', /* checkAuth, */ generateKey);
 Route.patch('/k/rvk', /* checkAuth, */ revokeKey);
 
 // delete key
-Route.delete('/k/dlt', checkAuth);
+Route.delete('/k/dlt', /* checkAuth */ deleteKey);
 
 // add permissions
 Route.put('/k/p/add', checkAuth);
