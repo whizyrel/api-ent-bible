@@ -19,7 +19,7 @@ Route.post('/k/g', /* checkAuth, */ generateKey);
 Route.patch('/k/rvk', /* checkAuth, */ revokeKey);
 
 // delete key
-Route.put('/k/dlt', checkAuth);
+Route.delete('/k/dlt', checkAuth);
 
 // add permissions
 Route.put('/k/p/add', checkAuth);
