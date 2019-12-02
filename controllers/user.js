@@ -1,4 +1,5 @@
-const api = require('../models/api-collection');
+// const api = require('../models/api-collection');
+const Key = require('../models/keys');
 /* const {
   signUpMail, verificationMail,
   recoveryLink, deleteMail,
@@ -12,7 +13,34 @@ const utf8 = require("utf8"); */
 // const Encryption = require('../helpers/encryption');
 
 exports.generateKey = (req, res, next) => {
+  const {query: {user}} = req;
+  // 0ktgTOtL91
 
+  Key
+      .findOne({key})
+      .then((doc) => {
+        if (doc) {
+          return res.status(409).json({
+            message: 'Key already exists!',
+            key: doc,
+          });
+        }
+
+        Key.create({key, user})
+            .then((doc) => {
+              return res.status(201).json({message: 'Success!', key: doc});
+            })
+            .catch((err) => {
+              return res.status(404).json({
+                message: 'An error occured => ' + err,
+              });
+            });
+      })
+      .catch((err) => {
+        return res.status(404).json({
+          message: 'An error occured => ' + err,
+        });
+      });
 };
 
 exports.revokeKey = (req, res, next) => {
