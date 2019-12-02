@@ -5,9 +5,11 @@ module.exports = (req, res, next) => {
 
   // use encoded string instead of bare _id as api key
   if (key) {
+    // save keys into table
     // use buffer instead of cryptoJs -> i would rather cryptoJs
     const decodedKey = Buffer.from(key, 'base64').toString('ascii');
     console.log(decodedKey);
+
     User.findOne({_id: decodedKey})
         .then((doc) => {
           if (doc) {

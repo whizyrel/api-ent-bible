@@ -91,7 +91,6 @@ app.get('/', (req, res, next) => {
       I guess this is friendlier. I am glad you visited me,
       visit my documentation for more on how ican help with your requests.`
   );
-  next();
 });
 
 // [middleware] global catch error, final stop

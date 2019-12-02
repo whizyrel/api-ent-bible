@@ -1,4 +1,3 @@
-// const mogoose = require('mongoose');
 const Chapter = require('../../models/chapter');
 const helpers = require('../../helpers/req-parser');
 

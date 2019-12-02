@@ -10,6 +10,7 @@ const Feedback = new Schema({
     type: String,
     required: true,
     match: [
+      // eslint-disable-next-line max-len
       /[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?/,
       'invalid email',
     ],

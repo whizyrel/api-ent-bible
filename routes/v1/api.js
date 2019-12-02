@@ -1,4 +1,5 @@
 const express = require('express');
+// eslint-disable-next-line new-cap
 const route = express.Router();
 
 const {
