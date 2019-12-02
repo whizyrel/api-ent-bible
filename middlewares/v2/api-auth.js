@@ -4,6 +4,7 @@ module.exports = (req, res, next) => {
   // use encoded string instead of bare _id as api key
   if (key) {
     // authenticate user against api-collection
+    // further authenticate user against grand db
   } else {
     return res.status(401).json({
       message: 'Authorization failed',

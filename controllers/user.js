@@ -33,7 +33,8 @@ exports.removePermission = (req, res, next) => {
 
 // users would be pulled from api-collection
 /*
-  - consider updating user information
+  - consider updating user information, create endpoint
+    that manages user data on change in gciapp
 */
 exports.listUsers = (req, res, next) => {
   User.findOne({
