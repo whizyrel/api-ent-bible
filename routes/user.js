@@ -5,7 +5,7 @@ const {
   // signUp, signIn,
   // verify, forgot, retrieve,
   // modify,
-  generateKey,
+  generateKey, revokeKey,
   listUsers, deleteUsers,
   upgrade, paymentsResp,
 } = require('../controllers/user');
@@ -16,7 +16,7 @@ const checkAuth = require('../middlewares/v2/check-auth');
 Route.post('/k/g', /* checkAuth, */ generateKey);
 
 // revoke key
-Route.put('/k/rvk', checkAuth);
+Route.patch('/k/rvk', /* checkAuth, */ revokeKey);
 
 // delete key
 Route.put('/k/dlt', checkAuth);
