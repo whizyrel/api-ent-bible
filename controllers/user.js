@@ -34,20 +34,47 @@ exports.generateKey = (req, res, next) => {
               return res.status(201).json({message: 'Success!', key: doc});
             })
             .catch((err) => {
-              return res.status(404).json({
+              return res.status(500).json({
                 message: 'An error occured => ' + err,
               });
             });
       })
       .catch((err) => {
-        return res.status(404).json({
+        return res.status(500).json({
           message: 'An error occured => ' + err,
         });
       });
 };
 
 exports.revokeKey = (req, res, next) => {
+  const {body: {key}} = req;
 
+  Key
+      .findOne({key})
+      .then((doc) => {
+        if (doc) {
+          // revoke
+          Key.updateOne({key}, {status: false})
+              .then((result) => {
+                return res.status(200).json({
+                  message: 'Success!',
+                  doc: result,
+                });
+              })
+              .catch((err) => {
+                return res.status(500).json({
+                  message: 'An error occured => ' + err,
+                });
+              });
+        } else {
+          return res.status(404).json({message: 'Key does not exist!'});
+        }
+      })
+      .catch((err) => {
+        return res.status(500).json({
+          message: 'An error occured => ' + err,
+        });
+      });
 };
 
 exports.deleteKey = (req, res, next) => {
