@@ -16,7 +16,6 @@ const utf8 = require("utf8"); */
 
 exports.generateKey = (req, res, next) => {
   const {body: {dt}} = req;
-  // 0ktgTOtL91
 
   const key = raidmaker.generate(13, {mode: 'alphanumeric'});
 
