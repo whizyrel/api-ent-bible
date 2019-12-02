@@ -1,5 +1,7 @@
 // const api = require('../models/api-collection');
 const Key = require('../models/keys');
+const raidmaker = require('raidmaker');
+
 /* const {
   signUpMail, verificationMail,
   recoveryLink, deleteMail,
@@ -13,11 +15,13 @@ const utf8 = require("utf8"); */
 // const Encryption = require('../helpers/encryption');
 
 exports.generateKey = (req, res, next) => {
-  const {query: {user}} = req;
+  const {body: {dt}} = req;
   // 0ktgTOtL91
 
+  const key = raidmaker.generate(13, {mode: 'alphanumeric'});
+
   Key
-      .findOne({key})
+      .findOne({user: dt})
       .then((doc) => {
         if (doc) {
           return res.status(409).json({
@@ -26,7 +30,7 @@ exports.generateKey = (req, res, next) => {
           });
         }
 
-        Key.create({key, user})
+        Key.create({key, user: dt})
             .then((doc) => {
               return res.status(201).json({message: 'Success!', key: doc});
             })
