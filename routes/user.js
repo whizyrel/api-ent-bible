@@ -5,6 +5,7 @@ const {
   // signUp, signIn,
   // verify, forgot, retrieve,
   // modify,
+  generateKey,
   listUsers, deleteUsers,
   upgrade, paymentsResp,
 } = require('../controllers/user');
@@ -12,7 +13,7 @@ const checkAuth = require('../middlewares/v2/check-auth');
 
 
 // generate api key
-Route.put('/k/g', checkAuth);
+Route.post('/k/g', /* checkAuth, */ generateKey);
 
 // revoke key
 Route.put('/k/rvk', checkAuth);
