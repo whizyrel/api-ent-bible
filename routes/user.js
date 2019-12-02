@@ -6,6 +6,7 @@ const {
   // verify, forgot, retrieve,
   // modify,
   generateKey, revokeKey, deleteKey,
+  listKey,
   listUsers, deleteUsers,
   upgrade, paymentsResp,
 } = require('../controllers/user');
@@ -20,6 +21,8 @@ Route.patch('/k/rvk', /* checkAuth, */ revokeKey);
 
 // delete key
 Route.delete('/k/dlt', /* checkAuth */ deleteKey);
+
+Route.get('/k/list', /* checkAuth */ listKey);
 
 // add permissions
 Route.put('/k/p/add', checkAuth);

@@ -14,6 +14,21 @@ const Ravepay = require('ravepay'); */
 const utf8 = require("utf8"); */
 // const Encryption = require('../helpers/encryption');
 
+exports.listKey = (req, res, next) => {
+  Key
+      .find({})
+      .then((docs) => {
+        return docs.length > 0 ?
+          res.status(200).json({message: 'Success!', docs}) :
+          res.status(200).json({message: 'Success, list empty!', docs});
+      })
+      .catch((err) => {
+        return res.status(500).json({
+          message: 'An error occured => ' + err,
+        });
+      });
+};
+
 exports.generateKey = (req, res, next) => {
   const {body: {dt}} = req;
 
