@@ -1,4 +1,5 @@
-const User = require('../models/user');
+// const User = require('../models/user');
+const Key = require('../models/keys');
 
 module.exports = (req, res, next) => {
   const {query: {key}} = req;
@@ -7,10 +8,10 @@ module.exports = (req, res, next) => {
   if (key) {
     // save keys into table
     // use buffer instead of cryptoJs -> i would rather cryptoJs
-    const decodedKey = Buffer.from(key, 'base64').toString('ascii');
-    console.log(decodedKey);
+    // const decodedKey = Buffer.from(key, 'base64').toString('ascii');
+    // console.log(decodedKey);
 
-    User.findOne({_id: decodedKey})
+    Key.findOne({key})
         .then((doc) => {
           if (doc) {
             next();
