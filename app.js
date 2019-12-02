@@ -57,6 +57,7 @@ app.use('/donation', Donations);
 // [User] user and admin routes
 // @ts-ignore
 app.use('/users', Users);
+app.use('/u', Users);
 
 // [api] user routes
 // @ts-ignore
