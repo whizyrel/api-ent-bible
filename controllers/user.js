@@ -54,18 +54,25 @@ exports.revokeKey = (req, res, next) => {
       .then((doc) => {
         if (doc) {
           // revoke
-          Key.updateOne({key}, {status: false})
-              .then((result) => {
-                return res.status(200).json({
-                  message: 'Success!',
-                  doc: result,
+          if (doc.status) {
+            Key.updateOne({key}, {status: false})
+                .then((result) => {
+                  return res.status(200).json({
+                    message: 'Success!',
+                    doc: result,
+                  });
+                })
+                .catch((err) => {
+                  return res.status(500).json({
+                    message: 'An error occured => ' + err,
+                  });
                 });
-              })
-              .catch((err) => {
-                return res.status(500).json({
-                  message: 'An error occured => ' + err,
-                });
-              });
+          } else {
+            return res.status(200).json({
+              message: 'Already revoked!',
+              doc: result,
+            });
+          }
         } else {
           return res.status(404).json({message: 'Key does not exist!'});
         }
@@ -78,7 +85,36 @@ exports.revokeKey = (req, res, next) => {
 };
 
 exports.deleteKey = (req, res, next) => {
+  const {body: {key}} = req;
 
+  Key
+      .findOne({key})
+      .then((doc) => {
+        if (doc) {
+        // delete
+          Key.deleteOne({key})
+              .then((result) => {
+                return res.status(200).json({
+                  message: 'Success!',
+                  doc: result,
+                });
+              })
+              .catch((err) => {
+                return res.status(500).json({
+                  message: 'An error occured => ' + err,
+                });
+              });
+        } else {
+          return res.status(404).json({
+            message: 'Key does not exist or it has been deleted already!',
+          });
+        }
+      })
+      .catch((err) => {
+        return res.status(500).json({
+          message: 'An error occured => ' + err,
+        });
+      });
 };
 
 exports.addPermission = (req, res, next) => {
