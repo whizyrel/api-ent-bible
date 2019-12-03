@@ -10,7 +10,7 @@ const {
   listUsers, deleteUsers,
   upgrade, paymentsResp,
 } = require('../controllers/user');
-const checkAuth = require('../middlewares/v2/check-auth');
+// const checkAuth = require('../middlewares/v2/check-auth');
 
 
 // generate api key

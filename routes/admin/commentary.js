@@ -1,6 +1,7 @@
 const express = require('express');
 const adminCommentaryController = require('../../controllers/admin/commentary');
 
+// eslint-disable-next-line new-cap
 const route = express.Router();
 
 // create and edit

@@ -8,7 +8,6 @@ const app = express();
 
 const Feedback = require('./routes/feedback');
 const v1Api = require('./routes/v1/api');
-const v2Api = require('./routes/v2/api');
 const AdminAPI = require('./routes/admin/api');
 const Users = require('./routes/user');
 const Commentary = require('./routes/commentary');
@@ -62,7 +61,6 @@ app.use('/u', Users);
 // [api] user routes
 // @ts-ignore
 app.use('/v1/api', v1Api);
-app.use('/v2/api', v2Api);
 
 // [api] admin routes
 // @ts-ignore

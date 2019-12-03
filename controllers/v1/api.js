@@ -3,7 +3,7 @@ const helpers = require('../../helpers/req-parser');
 
 // @ts-ignore
 exports.getAll = (req, res, next) => {
-  //  vrsn=kjv&key=5c02a6aa8fc2261e18e46849
+  //  vrsn=kjv&key=KrIr9m7fFLJmv
   const requests = req.query.vrsn.toLowerCase().split('|');
   Chapter.find({
     version: {

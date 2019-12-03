@@ -1,3 +1,4 @@
+// eslint-disable-next-line new-cap
 const route = require('express').Router();
 
 const checkAuth = require('../middlewares/check-auth');
