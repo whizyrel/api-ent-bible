@@ -17,9 +17,11 @@ const utf8 = require("utf8"); */
 // const Encryption = require('../helpers/encryption');
 
 exports.listKey = (req, res, next) => {
+  const {params: {k}} = req;
+
   Key
-      .find({})
-      .select('key user')
+      .find(k ? {key: k} : {})
+      .select(k ? '-__v' : 'key user')
       .then((docs) => {
         return docs.length > 0 ?
         res.status(200).json({message: 'Success!', docs}) :

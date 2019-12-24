@@ -22,7 +22,7 @@ route.patch('/k/mgmt/:ac', /* checkAuth, */ keyMgmt);
 // delete key
 route.delete('/k/dlt', /* checkAuth */ deleteKey);
 
-route.get('/k/l', /* checkAuth */ listKey);
+route.get('/k/l/:k', /* checkAuth */ listKey);
 
 // add permissions
 route.put('/k/p/a', checkAuth);
