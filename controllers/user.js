@@ -19,7 +19,7 @@ const utf8 = require("utf8"); */
 exports.listKey = (req, res, next) => {
   Key
       .find({})
-      .select('key user -id')
+      .select('key user')
       .then((docs) => {
         return docs.length > 0 ?
         res.status(200).json({message: 'Success!', docs}) :
