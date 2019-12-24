@@ -40,8 +40,8 @@ exports.checkChapQuery = (req, res, next) => {
 exports.checkVrsQuery = (req, res, next) => {
   const {query: {vrsn, bk, chp, vrs}} = req;
   if (
-    req.query && vrsn
-    && bk && chp && vrs
+    req.query && vrsn &&
+    bk && chp && vrs
   ) {
     next();
   } else {
