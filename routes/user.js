@@ -1,11 +1,11 @@
 // eslint-disable-next-line new-cap
-const Route = require('express').Router();
+const route = require('express').Router();
 
 const {
   // signUp, signIn,
   // verify, forgot, retrieve,
   // modify,
-  generateKey, revokeKey, deleteKey,
+  generateKey, keyMgmt, deleteKey,
   listKey,
   listUsers, deleteUsers,
   upgrade, paymentsResp,
@@ -14,55 +14,55 @@ const checkAuth = require('../middlewares/check-auth');
 
 
 // generate api key
-Route.post('/k/g', /* checkAuth, */ generateKey);
+route.post('/k/g', /* checkAuth, */ generateKey);
 
 // revoke key
-Route.patch('/k/rvk', /* checkAuth, */ revokeKey);
+route.patch('/k/mgmt/:ac', /* checkAuth, */ keyMgmt);
 
 // delete key
-Route.delete('/k/dlt', /* checkAuth */ deleteKey);
+route.delete('/k/dlt', /* checkAuth */ deleteKey);
 
-Route.get('/k/list', /* checkAuth */ listKey);
+route.get('/k/l/:k', /* checkAuth */ listKey);
 
 // add permissions
-Route.put('/k/p/add', checkAuth);
+route.put('/k/p/a', checkAuth);
 
 // remove permissions
-Route.put('/k/p/rm', checkAuth);
+route.put('/k/p/rm', checkAuth);
 
 // [get] user lists/details from db --> admin
-Route.get('/lists', checkAuth, listUsers);
+route.get('/lists', checkAuth, listUsers);
 
 // [delete] delete users from db --> user && admin
-Route.delete('/delete', checkAuth, deleteUsers);
+route.delete('/delete', checkAuth, deleteUsers);
 
 // [upgrade] upgrade users access --> user after payment
-Route.patch('/upgrade', checkAuth, upgrade);
+route.patch('/upgrade', checkAuth, upgrade);
 
 // payments webhook
-Route.post('/payments', paymentsResp);
+route.post('/payments', paymentsResp);
 
-module.exports = Route;
+module.exports = route;
 
-// // [Routes]
+// // [routes]
 // // [post] add users to db --> admin
-// Route.post('/signup', signUp);
+// route.post('/signup', signUp);
 //
 // // [get] user signs in to get token
-// Route.put('/signin', signIn);
+// route.put('/signin', signIn);
 //
 // // [patch] first link to password recovery
-// Route.patch('/verify/', verify);
+// route.patch('/verify/', verify);
 //
 // // [put] first link to password recovery
-// Route.put('/forgot', forgot);
+// route.put('/forgot', forgot);
 //
 // // [patch] retrieve password
-// Route.patch('/retrieve', retrieve);
+// route.patch('/retrieve', retrieve);
 //
 // // [patch] edit user details in db --> user && admin
-// Route.patch('/modify', checkAuth, modify);
+// route.patch('/modify', checkAuth, modify);
 
-// authentication gives access to each Route either admin || user
+// authentication gives access to each route either admin || user
 // [user keys] PATCH --> db --> edit users information
 // [admin keys] PUT, DELETE, PATCH, GET --> db --> users

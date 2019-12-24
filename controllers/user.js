@@ -2,6 +2,8 @@
 const Key = require('../models/keys');
 const raidmaker = require('raidmaker');
 
+const lengthPool = [10, 13, 15, 16];
+
 /* const {
   signUpMail, verificationMail,
   recoveryLink, deleteMail,
@@ -15,12 +17,15 @@ const utf8 = require("utf8"); */
 // const Encryption = require('../helpers/encryption');
 
 exports.listKey = (req, res, next) => {
+  const {params: {k}} = req;
+
   Key
-      .find({})
+      .find(k ? {key: k} : {})
+      .select(k ? '-__v' : 'key user')
       .then((docs) => {
         return docs.length > 0 ?
-          res.status(200).json({message: 'Success!', docs}) :
-          res.status(200).json({message: 'Success, list empty!', docs});
+        res.status(200).json({message: 'Success!', docs}) :
+        res.status(200).json({message: 'Success, list empty!', docs});
       })
       .catch((err) => {
         return res.status(500).json({
@@ -32,7 +37,11 @@ exports.listKey = (req, res, next) => {
 exports.generateKey = (req, res, next) => {
   const {body: {dt}} = req;
 
-  const key = raidmaker.generate(13, {mode: 'alphanumeric'});
+  const key = raidmaker.generate(
+      Math.floor(Math.random() * lengthPool.length),
+      {
+        mode: 'alphanumeric',
+      });
 
   Key
       .findOne({user: dt})
@@ -61,33 +70,43 @@ exports.generateKey = (req, res, next) => {
       });
 };
 
-exports.revokeKey = (req, res, next) => {
-  const {body: {key}} = req;
+exports.keyMgmt = (req, res, next) => {
+  const {body: {key}, params: {ac}} = req;
 
   Key
       .findOne({key})
       .then((doc) => {
         if (doc) {
-          // revoke
-          if (doc.status) {
-            Key.updateOne({key}, {status: false})
-                .then((result) => {
-                  return res.status(200).json({
-                    message: 'Success!',
-                    doc: result,
-                  });
-                })
-                .catch((err) => {
-                  return res.status(500).json({
-                    message: 'An error occured => ' + err,
-                  });
-                });
-          } else {
+        // revoke
+          if (ac == 'rvk' && doc.status === false) {
             return res.status(200).json({
-              message: 'Already revoked!',
-              doc: result,
+              message: `Already Revoked!`,
+              doc,
             });
           }
+
+          if (ac == 'unrvk' && doc.status === true) {
+            return res.status(200).json({
+              message: `Already Unrevoked!`,
+              doc,
+            });
+          }
+
+          Key.updateOne(
+              {key},
+              {status: ac === 'rvk' ? false : true}
+          )
+              .then((result) => {
+                return res.status(200).json({
+                  message: 'Success!',
+                  doc: result,
+                });
+              })
+              .catch((err) => {
+                return res.status(500).json({
+                  message: 'An error occured => ' + err,
+                });
+              });
         } else {
           return res.status(404).json({message: 'Key does not exist!'});
         }
